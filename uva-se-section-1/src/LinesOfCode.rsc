@@ -7,12 +7,30 @@ import lang::java::jdt::m3::AST;
 import List;
 import Set;
 import String;
+import Relation;
 
 
 // Lines of code is een te grote metric. Als men code op een iets andere manier schrijft zou je de lines of code kunnen veranderen.
 // Een method kan je op een lijn schrijven of meerdere lines.
 public int methodLoc(loc location){
 	return locationLoc(location, 1);
+}
+
+public int classesLoc(M3 model) {
+	set[loc] allCompilationUnits = {};
+	
+	int totalNumberOfLines = 0;
+	
+	rel[loc,loc] invertedContainment = invert(model.containment);
+	for(c <- classes(model)){
+		allCompilationUnits += invertedContainment[c];
+	}
+	for(x <- allCompilationUnits) {
+		int linesOfCodePerClass = classLoc(x);
+		println("LOC < linesOfCodePerClass> : <x>");
+		totalNumberOfLines += linesOfCodePerClass;
+	}
+	return totalNumberOfLines;
 }
 
 public int classLoc(loc location){

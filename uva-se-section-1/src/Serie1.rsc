@@ -35,25 +35,8 @@ public void runHsqlDb() {
 //Missing calulations. But all the data needed is here.
 public void calcSigModel(M3 model, set[Declaration] ast){
 	
-	//Total lines of code
-	set[loc] allCompilationUnits = {};
-	
-	rel[loc,loc] invertedContainment = invert(model.containment);
-	for(c <- classes(model)){
-		allCompilationUnits += invertedContainment[c];
-	}
-	
-
-	
-	int totalNumberOfLines = 0;
-	
-	for(x <- allCompilationUnits){
-		int linesOfCodePerClass = classLoc(x);
-		println("LOC <linesOfCodePerClass> : <x>");
-		totalNumberOfLines += linesOfCodePerClass;
-	}
-	
-	println("Total Lines of Code: <totalNumberOfLines>");
+	int totalLinesOfCode = classesLoc(model);
+	println("Total Lines of Code: <totalLinesOfCode>");
 	
 	//CyclomaticComplexity build up <methodName, Complexity, methodLOC, LocationMethod>
 	lrel[str,int,int,loc] methods = complexityPerMethod(ast);

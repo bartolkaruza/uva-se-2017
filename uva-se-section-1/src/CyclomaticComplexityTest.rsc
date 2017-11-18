@@ -7,7 +7,6 @@ import lang::java::jdt::m3::AST;
 import List;
 import Set;
 import String;
-import Math;
 import CyclomaticComplexityAst;
 import lang::java::\syntax::Disambiguate;
 import lang::java::\syntax::Java15;
