@@ -91,7 +91,7 @@ public class CyclomaticVariants {
 		}
 	}
 	
-	public void inifxOrInIf() {
+	public void infixOrInIf() {
 		if(testValue || true) {
 			System.out.println("inifxOrInIf");	
 		}
