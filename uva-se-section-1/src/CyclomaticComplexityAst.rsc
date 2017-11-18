@@ -15,7 +15,7 @@ public lrel[str, int, int, loc] complexityPerMethod(set[Declaration] ast){
 	// Return tuple of <name, CyclomaticComplexity, method location, method LOC>
 	allMethods = [<n, complexity(i), methodLoc(M.decl), M.decl> | /M:method(_, str n, _, _, i) := ast || /M:constructor(str n, _, _, i) := ast];							
 													
-	allAbstractMethods = [<n,1> | Declaration x <- ast, /method(_, str n, _, _) := x];	// Do we include abstractmethods?									
+	allAbstractMethods = [<n,1> | Declaration x <- ast, /method(_, str n, _, _) := x];	// Do we include abstractmethods? No, they have 0 complexity and lines by definition									
 		
 	return allMethods;
 }
