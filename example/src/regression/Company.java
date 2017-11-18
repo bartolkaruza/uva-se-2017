@@ -1,5 +1,5 @@
 
-package example;
+package regression;
 
 import java.util.List;
 

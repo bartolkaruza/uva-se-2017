@@ -10,17 +10,17 @@ import Set;
 import String;
 
 
-public lrel[str, int, int, loc] CyclomaticComplexity(set[Declaration] ast){
+public lrel[str, int, int, loc] complexityPerMethod(set[Declaration] ast){
 
 	// Return tuple of <name, CyclomaticComplexity, method location, method LOC>
-	allMethods = [<n, CC(i), CountLinesOfCodeMethod(M.decl), M.decl> | /M:method(_, str n, _, _, i) := ast || /M:constructor(str n, _, _, i) := ast];							
+	allMethods = [<n, complexity(i), methodLoc(M.decl), M.decl> | /M:method(_, str n, _, _, i) := ast || /M:constructor(str n, _, _, i) := ast];							
 													
 	allAbstractMethods = [<n,1> | Declaration x <- ast, /method(_, str n, _, _) := x];	// Do we include abstractmethods?									
 		
 	return allMethods;
 }
 
-public int CC(Statement s){
+public int complexity(Statement s){
     int result = 1;
     visit (s) {
         case \if(_,_) : result += 1;

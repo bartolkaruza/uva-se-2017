@@ -11,21 +11,21 @@ import String;
 
 // Lines of code is een te grote metric. Als men code op een iets andere manier schrijft zou je de lines of code kunnen veranderen.
 // Een method kan je op een lijn schrijven of meerdere lines.
-public int CountLinesOfCodeMethod(loc location){
-	return CountLinesOfCode(location, 1);
+public int methodLoc(loc location){
+	return locationLoc(location, 1);
 }
 
-public int CountLinesOfCodeClass(loc location){
-	return CountLinesOfCode(location, 0);
+public int classLoc(loc location){
+	return locationLoc(location, 0);
 }
 
-public int CountLinesOfCode(loc location, int startingCount){
+public int locationLoc(loc location, int startingCount){
 	str content = readFile(location);
 	
-	return startingCount += CountLineBreaks(content) - CountEmptySpace(content) - CountComments(content);
+	return startingCount += lineBreaksLoc(content) - emptySpaceLoc(content) - commentsLoc(content);
 }
 
-public int CountComments(str file){
+public int commentsLoc(str file){
 	int count = 0;
 	
 	// Count comments of type '//'
@@ -34,12 +34,12 @@ public int CountComments(str file){
 				
 	// Count comments of type '/* */'
 	for(/<w:\/\*[\s\S]*?\*\/\r\n>/ := file)
-		count += CountLineBreaks(w);
+		count += lineBreaksLoc(w);
 	
 	return count;
 }
 
-public int CountEmptySpace(str file){
+public int emptySpaceLoc(str file){
 	int count = 0;
 	for(/<w:\r\n[\t]*?\r\n>/ := file)
 		count += 1;
@@ -47,7 +47,7 @@ public int CountEmptySpace(str file){
 	return count;
 }
 
-public int CountLineBreaks(str file){
+public int lineBreaksLoc(str file){
 	int count = 0;
 	for(/\r\n/ := file)
 		count += 1;

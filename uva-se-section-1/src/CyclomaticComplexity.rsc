@@ -7,7 +7,7 @@ import ParseTree;
 
 set[MethodDec] allMethods(loc file) = {m | /MethodDec m := parse(#start[CompilationUnit], file)};
 
-public int CyclomaticComplexity(MethodDec m) {
+public int methodComplexity(MethodDec m) {
 	result = 1;
 	visit (m) {
 		case (Stm)`if (<Expr _>) <Stm _>`: result +=1;
@@ -17,7 +17,7 @@ public int CyclomaticComplexity(MethodDec m) {
 }
 
 public list[int] allMethodComplexities() {
-	return [ CyclomaticComplexity(x) | MethodDec x <- allMethods(|project://SystemUnderTest/src/EntryPoint.java|) ];
+	return [ methodComplexity(x) | MethodDec x <- allMethods(|project://SystemUnderTest/src/EntryPoint.java|) ];
 }
 
 public int averageComplexity() {

@@ -1,6 +1,6 @@
 /* this is a test */
 
-package example;
+package regression;
 
 public class Employee {
 
@@ -20,4 +20,5 @@ public class Employee {
 //	
 //	public void p() {};
 }
+
 

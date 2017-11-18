@@ -14,25 +14,26 @@ import Exception;
 import CyclomaticComplexityAst;
 import LinesOfCode;
 
-
-public set[Declaration] ast = createAstsFromEclipseProject(|project://smallsql0.21_src/src/smallsql|, true);
-public M3 model = createM3FromEclipseProject(|project://smallsql0.21_src/src/smallsql|);
-
-// Test project
-public set[Declaration] astTest = createAstsFromEclipseProject(|project://example|, true);
-public M3 modelTest = createM3FromEclipseProject(|project://example|);
-
-
-public void RunTest(){
-	CalcSigModel(modelTest, astTest);
+public void runModelOnRegressionSet(){
+	set[Declaration] astTest = createAstsFromEclipseProject(|project://regression-set|, true);
+	M3 modelTest = createM3FromEclipseProject(|project://regression-set|);
+	calcSigModel(modelTest, astTest);
 }
 
-public void RunSmallSql(){
-	CalcSigModel(model, ast);
+public void runSmallSql(){
+	set[Declaration] ast = createAstsFromEclipseProject(|project://smallsql0.21_src/src/smallsql|, true);
+	M3 model = createM3FromEclipseProject(|project://smallsql0.21_src/src/smallsql|);
+	calcSigModel(model, ast);
+}
+
+public void runHsqlDb() {
+	set[Declaration] ast = createAstsFromEclipseProject(|project://hsqldb-2.3.1/src/org.hsqldb|, true);
+	M3 model = createM3FromEclipseProject(|project://hsqldb-2.3.1/src/org.hsqldb|);
+	calcSigModel(model, ast);
 }
 
 //Missing calulations. But all the data needed is here.
-public void CalcSigModel(M3 model, set[Declaration] ast){
+public void calcSigModel(M3 model, set[Declaration] ast){
 	
 	//Total lines of code
 	set[loc] allCompilationUnits = {};
@@ -47,7 +48,7 @@ public void CalcSigModel(M3 model, set[Declaration] ast){
 	int totalNumberOfLines = 0;
 	
 	for(x <- allCompilationUnits){
-		int linesOfCodePerClass = CountLinesOfCodeClass(x);
+		int linesOfCodePerClass = classLoc(x);
 		println("LOC <linesOfCodePerClass> : <x>");
 		totalNumberOfLines += linesOfCodePerClass;
 	}
@@ -55,7 +56,7 @@ public void CalcSigModel(M3 model, set[Declaration] ast){
 	println("Total Lines of Code: <totalNumberOfLines>");
 	
 	//CyclomaticComplexity build up <methodName, Complexity, methodLOC, LocationMethod>
-	lrel[str,int,int,loc] methods = CyclomaticComplexity(ast);
+	lrel[str,int,int,loc] methods = complexityPerMethod(ast);
 	println("Cyclomatic complexity: ");
 	
 	for(x <- methods){
