@@ -22,22 +22,7 @@ visit (ast) {
 }
 
 test bool shouldReturnRightComplexityForVariants() {
-	 ////set[Declaration] variantsAst = ast
-	 //visit(ast) {
-	 //	case \class(CyclomaticVariants)\: 
-	 //}
-	 //Declaration = \class(str name\;
-	 
 	 return !(false in mapper(complexityPerMethod(toSet(getTestClassBody())), testMethod));
-	 
-	 //for(tuple[str, int, int, loc] method <- complexityPerMethod(toSet(getTestClassBody()))) {
-	 //switch(method[0]) {
-	 //case "switchStatement": result.psuassert(method[1] == 3);
-	 //}
-	 //	
-	 //}
-	 
-	//methodLoc(Declaration = declarations[0];
 }
 
 bool testMethod(tuple[str, int, int, loc] method) {
