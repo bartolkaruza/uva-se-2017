@@ -12,15 +12,12 @@ import Relation;
 // Lines of code is een te grote metric. Als men code op een iets andere manier schrijft zou je de lines of code kunnen veranderen.
 // Een method kan je op een lijn schrijven of meerdere lines.
 public int classesLoc(list[loc] files) {
-
-	
 	int totalNumberOfLines = 0;
 
 	println("number of files <size(files)>");
 	for(x <- files) {
-		//println("file <x>");
-	
 		int linesOfCodePerClass = locationLoc(x);
+		//println("<linesOfCodePerClass>, <x>");
 		totalNumberOfLines += linesOfCodePerClass;
 	}
 	
@@ -28,100 +25,95 @@ public int classesLoc(list[loc] files) {
 }
 
 public int locationLoc(loc location){
-	try list[str] content = readFileLines(location);
+	list[str] content = [];
+	try content = readFileLines(location);
 	catch: return 0;
-	comm = [""];
-	//c = content;
-	//
-	//c = c - [x| x <- c, /^$|^[\s\t]+$/ := x];
-	//c = c - [x| x <- c, /^[\s\t]*?\/{2,}.*/ := x];
 	
-	//ak = 0;
-	//int comments = 0;
-	//
-	//str file = readFile(location);
-	//for(/<w:\/\*[\s\S]*?\*\/\r\n>/ := file)
-	//	comments += lineBreaksLoc(w);
-	//
-	//k = size(c) - comLoc(c);	
-	//
-
-	//println("size <s> comments <e>, <location>");
-	//
-	oke = [x| x <- content, /^$|^[\s\t]+$/ := x];
-	c = content - oke;
-	comments = commentsLoc(c, location);
-
-	emptys = emptySpaceLoc(content);
-	//println("Blanks <emptys>, Comments <comments>  <location>");
-	//println("wut <size(comm)>");
-	return size(content) - emptys - comments;
-	//return size([x| x <- content, /^$|^[\s\t]+$/ := x]);
+	blanks = emptyLines(content);
+	contentWithoutBlanks = content - blanks;
+	comments = allCommentsLoc(contentWithoutBlanks, location);
+	
+	return size(contentWithoutBlanks) - comments;
 }
-private int ak;
-private list[str] comm;
 
-public int comLoc(list[str] file){
+
+public int multiLineCommentsLoc(list[str] file){
+	int comments = 0;
 	for(i <- [0..size(file)]){
 		if(/^[\s\t]*?\/\*.*?\*\/[\s\t]*?$/ := file[i]){
 			//println("<file[i]>");
-			ak += 1;
+			tests += file[i];
+			comments += 1;
 		}
-		//else if(/^.*?\/\*.*?\*\/.*?$/ := file[i]){
-		//	continue;
-		//}
+		else if(/^.*?\/\*.*?\*\/.*?$/ := file[i]){
+			continue;
+		}
 		else if(/^[\s\t]*?\/\*/ := file[i]){
-			i = com2Loc(file, i+1);
-			ak += 1;
+			//println("<file[i]>");
+			tests += file[i];
+			<x,y> = findEndInMultiLineComment(file, i+1);
+			i = x;
+			
+			comments += y + 1;
 		}
-		//else if (/^[\w,;,}]*?\/\*/ := file[i]){
-		//	//i = com2Loc(file, i+1);
-		//	continue;
-		//}
+		else if (/^[\s\t{]+\/\*/ := file[i]){
+			//println("<file[i]>");
+			<x,y> = findEndInMultiLineComment(file, i+1);
+			i = x;
+			comments += y;
+			//i = com2Loc(file, i+1);
+			//continue;
+		}
 	}
-	return ak;
+	tests = drop(1, tests);
+	return comments;
 }
 
-public int com2Loc(list[str] file, int i){
+public tuple[int, int] findEndInMultiLineComment(list[str] file, int i){
+	int comments = 0;
 	for(j <- [i..size(file)]){
-		if (/^.*?\*\/[\s\t]*?$/ := file[j]){
+		if (/^.*\*\/[\s\t]*?$/ := file[j]){
+		//if (/^[\s\t]*?\/{2,}.*/ := file[j]){
 			//println("<file[j]>");
-			ak += 1;
-			return j+1;
+			comments += 1;
+			tests += file[j];
+			return <j+1,comments>;
 		}
 		//else if(/^.*?\*\/.*?$/ := file[j]) {
 		//	return j+1;
 		//} 
 		else{
 			//println("<file[j]>");
-			ak += 1;
+			tests += file[j];
+			comments += 1;
 		}
 	}
 	//println("<file[i]>");
-	return size(file);
+	return <size(file),comments>;
 }
 
-public int commentsLoc(list[str] file, loc location){
+public list[str] tests;
+
+public int allCommentsLoc(list[str] file, loc location){
 	int comments = 0;
-	
+	tests = [""];
 	// Count comments of type '/* */'
-	ak = 0;
-	po = [x| x <- file, /^[\s\t]*?\/{2,}.*/ := x];
-	lk = file - po;
-	comments += size(po);
-	comments += comLoc(lk);
-	//str file = readFile(location);
-	//for(/<w:\/\*[\s\S]*?\*\/\r\n>/ := file)
-	//	comments += lineBreaksLoc(w);
-	//hh = file - comm;
-	//comments += size([x| x <- hh, /^[\s\t]*?\/{2,}.*/ := x]);
+	comments += multiLineCommentsLoc(file);
 	
+	lo = file - tests;
+	po = singleLineCommentsLoc(lo);
+	comments += size(lo) - size(po);
 	return comments;
 }
 
+public list[str] singleLineCommentsLoc(list[str] file){
+	comments = [x| x <- file, /^[\s\t]*?\/{2,}.*/ := x];
+	file = file - comments;
+	//comments = [x | x <- file, /^[\s\t]*?\/\*.*?\*\/[\s\t]*?$/ := x];
+	//file = file - comments;
+	return file;
+}
 
-public int emptySpaceLoc(list[str] file){
-	int blanks = 0;
-	blanks += size([x| x <- file, /^$|^[\s\t]+$/ := x]);	
-	return blanks;
+public list[str] emptyLines(list[str] file){
+	return [x| x <- file, /^$|^[\s\t]+$/ := x];
 }

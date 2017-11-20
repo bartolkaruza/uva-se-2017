@@ -17,14 +17,8 @@ import LinesOfCode;
 
 import util::Resources;
 
-public list[loc] allFiles(){
-	projectLoc = getProject(|project://smallsql0.21_src/src/smallsql|);
-	//projectLoc = getProject(|project://hsqldb-2.3.1/hsqldb|);
-	//l = [f.extension | /file(f) := projectLoc, f.extension == "java"];
-	//for(x <- projectLoc){
-		//println(l);
-	//}
-	return [f | /file(f) := projectLoc, f.extension == "java"];
+public list[loc] allFiles(loc project){
+	return [f | /file(f) := getProject(project), f.extension == "java"];
 }
 
 
@@ -35,21 +29,24 @@ public void runModelOnRegressionSet(){
 }
 
 public void runSmallSql(){
-	set[Declaration] ast = createAstsFromEclipseProject(|project://smallsql0.21_src/src/smallsql|, true);
-	M3 model = createM3FromEclipseProject(|project://smallsql0.21_src/src/smallsql|);
-	calcSigModel(model, ast);
+	//M3 model = createM3FromEclipseProject(|project://smallsql0.21_src|);
+	run(|project://smallsql0.21_src|);
 }
 
 public void runHsqlDb() {
-	set[Declaration] ast = createAstsFromEclipseProject(|project://hsqldb-2.3.1/src/org.hsqldb|, true);
-	M3 model = createM3FromEclipseProject(|project://hsqldb-2.3.1/src/org.hsqldb|);
-	calcSigModel(model, ast);
+	run(|project://hsqldb-2.3.1|);
+}
+
+public void run(loc project){
+	//M3 model = createM3FromEclipseProject(project);
+	set[Declaration] ast = createAstsFromEclipseProject(project, true);
+	calcSigModel(allFiles(project), ast);
 }
 
 //Missing calulations. But all the data needed is here.
-public void calcSigModel(M3 model, set[Declaration] ast){
+public void calcSigModel(list[loc] filess, set[Declaration] ast){
 	
-	int totalLinesOfCode = classesLoc(allFiles());
+	int totalLinesOfCode = classesLoc(filess);
 	println("Total Lines of Code: <totalLinesOfCode>");
 	println("Volume: <volumeRanking(totalLinesOfCode)>");
 	
