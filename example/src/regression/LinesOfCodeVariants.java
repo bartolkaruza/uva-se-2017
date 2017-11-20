@@ -1,3 +1,7 @@
+/* licensing information
+ * 
+ * 
+ */
 package regression;
 
 /**
@@ -7,8 +11,12 @@ public abstract class LinesOfCodeVariants {
 	
 	public LinesOfCodeVariants () {
 		System.out.println("1");
-		System.out.println("2");
+		System.out.println("2");/*
+		/*
+		// */
 	}
+	
+	
 	
 	public abstract void abstractMethod();
 	
@@ -61,6 +69,8 @@ public abstract class LinesOfCodeVariants {
 			System.out.println("1");
 			System.out.println("2");
 		}
+		void innerMethod() {		
+		}
 	}
 	
 	public void methodVariant1() {
@@ -68,8 +78,9 @@ public abstract class LinesOfCodeVariants {
 	}
 	
 	public void methodVariant2() {
-		System.out.println("text on multiple "
-				+ "lines");
+		System.out.println("text on "
+				+ "/* multiple */"
+				+ "// lines");
 	}
 	
 }

@@ -9,27 +9,7 @@ import List;
 import Set;
 import String;
 
-public list[int] complexitySystem(set[Declaration] ast){
-	list[int] complexityRanking = [0,0,0,0];
 
-	for(<_,complexity, linesOfCode,_> <- complexityPerMethod(ast)){
-		complexityRanking[riskEvaluationMethod(complexity)] += linesOfCode;
-	}
-	
-	return complexityRanking;
-}
-
-public int riskEvaluationMethod(int complexity){
-	if(complexity <= 10){
-		return 0;
-	}else if(complexity >= 11 && complexity <= 20){
-		return 1;
-	}else if(complexity >= 21 && complexity <= 50){
-		return 2;
-	}else {
-		return 3;
-	}
-}
 
 public lrel[str, int, int, loc] complexityPerMethod(set[Declaration] ast){
 

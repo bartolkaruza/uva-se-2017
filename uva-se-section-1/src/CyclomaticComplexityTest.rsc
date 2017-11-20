@@ -8,11 +8,9 @@ import List;
 import Set;
 import String;
 import CyclomaticComplexityAst;
-import lang::java::\syntax::Disambiguate;
-import lang::java::\syntax::Java15;
 
-public M3 model = createM3FromEclipseProject(|project://regression-set|);
-public set[Declaration] ast = createAstsFromEclipseProject(|project://regression-set|, true);
+public M3 model = createM3FromEclipseProject(|project://example/src/regression|);
+public set[Declaration] ast = createAstsFromEclipseProject(|project://example/src/regression|, true);
 
 public list[Declaration] getTestClassBody() {
 visit (ast) {

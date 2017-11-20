@@ -38,28 +38,27 @@ public void runHsqlDb() {
 }
 
 public void run(loc project){
-	//M3 model = createM3FromEclipseProject(project);
+	M3 model = createM3FromEclipseProject(project);
 	set[Declaration] ast = createAstsFromEclipseProject(project, true);
 	calcSigModel(allFiles(project), ast);
 }
 
 //Missing calulations. But all the data needed is here.
-public void calcSigModel(list[loc] filess, set[Declaration] ast){
+public void calcSigModel(list[loc] files, set[Declaration] ast){
 	
-	int totalLinesOfCode = classesLoc(filess);
+	int totalLinesOfCode = classesLoc(files);
 	println("Total Lines of Code: <totalLinesOfCode>");
 	println("Volume: <volumeRanking(totalLinesOfCode)>");
 	
 	//CyclomaticComplexity build up <methodName, Complexity, methodLOC, LocationMethod>
-	//lrel[str,int,int,loc] methods = complexityPerMethod(ast);
-	list[int] complexity = complexitySystem(ast);
+	lrel[str,int,int,loc] methods = complexityPerMethod(ast);
+	
 	println("Cyclomatic complexity: ");
-	println("Comlexity: <systemComplexityRanking(toReal(totalLinesOfCode), complexity)>");
+	println("Comlexity: <systemComplexityRanking(toReal(totalLinesOfCode), relativeComplexity(methods))>");
 	
 	//Unit size
-	//for(<str name, _,int linesOfCode, _> <- methods){
-	//	println("unit: <name> size: <linesOfCode>");
-	//}
+	println("Unit size");
+	println("Unit size: <systemComplexityRanking(toReal(totalLinesOfCode), relativeUnitSize(methods))>");
 }
 
 public str volumeRanking(int linesOfCode){
@@ -95,5 +94,37 @@ public str systemComplexityRanking(real linesOfCode, list[int] comlexityMethods)
 		return "-";
 	}else {
 		return "--";
+	}
+}
+
+public list[int] relativeComplexity(lrel[str,int,int,loc] methods){
+	list[int] complexityRanking = [0,0,0,0];
+
+	for(<_,complexity, linesOfCode,_> <- methods){
+		complexityRanking[riskEvaluationMethod(complexity)] += linesOfCode;
+	}
+	
+	return complexityRanking;
+}
+
+public list[int] relativeUnitSize(lrel[str,int,int,loc] methods){
+	list[int] unitSizeRanking = [0,0,0,0];
+
+	for(<_,_, linesOfCode,_> <- methods){
+		unitSizeRanking[riskEvaluationMethod(linesOfCode)] += linesOfCode;
+	}
+	
+	return unitSizeRanking;
+}
+
+public int riskEvaluationMethod(int complexity){
+	if(complexity <= 10){
+		return 0;
+	}else if(complexity >= 11 && complexity <= 20){
+		return 1;
+	}else if(complexity >= 21 && complexity <= 50){
+		return 2;
+	}else {
+		return 3;
 	}
 }

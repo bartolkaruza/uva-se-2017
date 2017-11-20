@@ -17,7 +17,6 @@ public int classesLoc(list[loc] files) {
 	println("number of files <size(files)>");
 	for(x <- files) {
 		int linesOfCodePerClass = locationLoc(x);
-		//println("<linesOfCodePerClass>, <x>");
 		totalNumberOfLines += linesOfCodePerClass;
 	}
 	
@@ -88,7 +87,6 @@ public tuple[int, int] findEndInMultiLineComment(list[str] file, int i){
 			comments += 1;
 		}
 	}
-	//println("<file[i]>");
 	return <size(file),comments>;
 }
 
@@ -109,8 +107,6 @@ public int allCommentsLoc(list[str] file, loc location){
 public list[str] singleLineCommentsLoc(list[str] file){
 	comments = [x| x <- file, /^[\s\t]*?\/{2,}.*/ := x];
 	file = file - comments;
-	//comments = [x | x <- file, /^[\s\t]*?\/\*.*?\*\/[\s\t]*?$/ := x];
-	//file = file - comments;
 	return file;
 }
 
