@@ -19,7 +19,11 @@ import util::Resources;
 
 public list[loc] allFiles(){
 	projectLoc = getProject(|project://smallsql0.21_src/src/smallsql|);
-
+	//projectLoc = getProject(|project://hsqldb-2.3.1/hsqldb|);
+	//l = [f.extension | /file(f) := projectLoc, f.extension == "java"];
+	//for(x <- projectLoc){
+		//println(l);
+	//}
 	return [f | /file(f) := projectLoc, f.extension == "java"];
 }
 
@@ -49,11 +53,11 @@ public void calcSigModel(M3 model, set[Declaration] ast){
 	println("Total Lines of Code: <totalLinesOfCode>");
 	println("Volume: <volumeRanking(totalLinesOfCode)>");
 	
-	////CyclomaticComplexity build up <methodName, Complexity, methodLOC, LocationMethod>
-	////lrel[str,int,int,loc] methods = complexityPerMethod(ast);
-	//list[int] complexity = complexitySystem(ast);
-	//println("Cyclomatic complexity: ");
-	//println("Comlexity: <systemComplexityRanking(toReal(totalLinesOfCode), complexity)>");
+	//CyclomaticComplexity build up <methodName, Complexity, methodLOC, LocationMethod>
+	//lrel[str,int,int,loc] methods = complexityPerMethod(ast);
+	list[int] complexity = complexitySystem(ast);
+	println("Cyclomatic complexity: ");
+	println("Comlexity: <systemComplexityRanking(toReal(totalLinesOfCode), complexity)>");
 	
 	//Unit size
 	//for(<str name, _,int linesOfCode, _> <- methods){

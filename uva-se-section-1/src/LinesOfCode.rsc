@@ -53,7 +53,7 @@ public int locationLoc(loc location){
 	comments = commentsLoc(c, location);
 
 	emptys = emptySpaceLoc(content);
-	//println("Comments <comments> blanks <emptys>, <location>");
+	//println("Blanks <emptys>, Comments <comments>  <location>");
 	//println("wut <size(comm)>");
 	return size(content) - emptys - comments;
 	//return size([x| x <- content, /^$|^[\s\t]+$/ := x]);
@@ -62,21 +62,22 @@ private int ak;
 private list[str] comm;
 
 public int comLoc(list[str] file){
-	/**/
 	for(i <- [0..size(file)]){
 		if(/^[\s\t]*?\/\*.*?\*\/[\s\t]*?$/ := file[i]){
 			//println("<file[i]>");
-			comm += file[i];
 			ak += 1;
-		}else if(/^.*?\/\*.*?\*\/.*?$/ := file[i]){
-			continue;
-		}else if(/^[\s\t]*?\/\*/ := file[i]){
-			comm += file[i];
-			i = com2Loc(file, i+1);
-			ak += 1;
-		}else if (/^.*?\/\*/ := file[i]){
-			i = com2Loc(file, i+1);
 		}
+		//else if(/^.*?\/\*.*?\*\/.*?$/ := file[i]){
+		//	continue;
+		//}
+		else if(/^[\s\t]*?\/\*/ := file[i]){
+			i = com2Loc(file, i+1);
+			ak += 1;
+		}
+		//else if (/^[\w,;,}]*?\/\*/ := file[i]){
+		//	//i = com2Loc(file, i+1);
+		//	continue;
+		//}
 	}
 	return ak;
 }
@@ -85,18 +86,18 @@ public int com2Loc(list[str] file, int i){
 	for(j <- [i..size(file)]){
 		if (/^.*?\*\/[\s\t]*?$/ := file[j]){
 			//println("<file[j]>");
-			comm += file[j];
 			ak += 1;
 			return j+1;
-		}else if(/^.*?\*\/.*?$/ := file[j]) {
-			return j+1;
-		} else{
+		}
+		//else if(/^.*?\*\/.*?$/ := file[j]) {
+		//	return j+1;
+		//} 
+		else{
 			//println("<file[j]>");
-			comm += file[j];
 			ak += 1;
 		}
 	}
-	println("<file[i]>");
+	//println("<file[i]>");
 	return size(file);
 }
 
@@ -105,7 +106,10 @@ public int commentsLoc(list[str] file, loc location){
 	
 	// Count comments of type '/* */'
 	ak = 0;
-	comments += comLoc(file - [x| x <- file, /^[\s\t]*?\/{2,}.*/ := x]);
+	po = [x| x <- file, /^[\s\t]*?\/{2,}.*/ := x];
+	lk = file - po;
+	comments += size(po);
+	comments += comLoc(lk);
 	//str file = readFile(location);
 	//for(/<w:\/\*[\s\S]*?\*\/\r\n>/ := file)
 	//	comments += lineBreaksLoc(w);
@@ -120,12 +124,4 @@ public int emptySpaceLoc(list[str] file){
 	int blanks = 0;
 	blanks += size([x| x <- file, /^$|^[\s\t]+$/ := x]);	
 	return blanks;
-}
-
-
-public int lineBreaksLoc(str file){
-	int count = 0;
-	for(/\r\n/ := file)
-		count += 1;
-	return count;
 }
