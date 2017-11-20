@@ -4,32 +4,67 @@ import IO;
 import util::Resources;
 import List;
 import Set;
+import String;
 import lang::java::jdt::m3::Core;
 import lang::java::jdt::m3::AST;
 
-Resource project = getProject(|project://regression-set|);
-set[Declaration] astTest = createAstsFromEclipseProject(|project://regression-set|, true);
+public bool detectClones(list[tuple[str, loc]] methods) {
+list[tuple[str, list[str]]] methodsWithBlocks = makeBlocks(filterMethods(trimMethods([readMethodLines(x) |x <- methods]), 6), 6);
+	
+	while(size(methodsWithBlocks) != 0) {
+		headAndTail = pop(methodsWithBlocks);
+		methodsWithBlocks = headAndTail[1];
+		for(otherMethod <- methodsWithBlocks) {
+			otherMethodSet = toSet(otherMethod[1]);
+			thisSet = toSet(headAndTail[0][1]);
+			if(size(thisSet + otherMethodSet) < size(thisSet) + size(otherMethodSet)) {
+				println("clone in: " + headAndTail[0][0]);
+				println("and: " + otherMethod[0]);
+			}
+		}
+	}
+	return false;
+}
 
-tuple[str, list[str]] readMethodLines(<name, location>) {
+public list[tuple[str, list[str]]] makeBlocks(myMethods, blockLength) {
+	return [<m[0], makeBlock(m[1], blockLength)> | m <- myMethods];
+}
+
+public list[str] makeBlock(myLines, blockLength) {
+	list[str] blocks = [];
+	for(currentLine <- myLines) {
+		str block = currentLine;
+		int index = indexOf(myLines, currentLine);
+		int remaining = size(myLines) - (index + blockLength);
+		int followingIndex = index + 1;
+		if(remaining < 0) {
+			break;
+		}
+		while(followingIndex < size(myLines)) {
+			block = block + "/n" + myLines[followingIndex];
+			followingIndex = followingIndex + 1;
+		}
+		
+		blocks = push(block, blocks);
+	}
+	return blocks;
+}
+
+public tuple[str, list[str]] readMethodLines(<name, location>) {
 	return <name, readFileLines(location)>;
 }
 
-public bool variantsDuplication() {
-
-	allMethods = [<M.name, readFileLines(M.src)> | /M:method(_, str n, _, _, i) := astTest || /M:constructor(str n, _, _, i) := astTest];
-	
-	for(m <- allMethods, size(m[1]) >= 6) {
-		println(allMethods[0]);
-	}
-	
-	
-	//[f | /file(f) := projectLoc, f.extension == "java"]
-	//print(project);
-	list[tuple[loc, list[str]]] filesAndLines = [<f, readFileLines(f)> | /file(f) := project, f.extension == "java"];
-	
-	//for(x <- filesAndLines) {
-	//	println(x);
-	//}
-	
-	return true;
+public list[str] trimLines(lines) {
+	return [trim(l) | str l <- lines, !isEmpty(trim(l))];
 }
+
+public list[tuple[str, list[str]]] trimMethods(myMethods) {
+	return [<m[0], trimLines(m[1])> | m <- myMethods];
+}
+
+public list[tuple[str, list[str]]] filterMethods(myMethods, blockLength) {
+	return [m | m <- myMethods, size(m[1]) >= blockLength];
+}
+
+
+
