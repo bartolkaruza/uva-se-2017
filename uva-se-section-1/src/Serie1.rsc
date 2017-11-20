@@ -8,16 +8,16 @@ import List;
 import Set;
 import Relation;
 import String;
-import List;
-import Exception;
 import util::Math;
+import util::Resources;
 
 import CyclomaticComplexityAst;
 import LinesOfCode;
 
-import util::Resources;
 
 public list[loc] allFiles(loc project){
+	//return [f | /file(f) := getProject(project), f.extension == "java", /^.*\/hsqldb\/(src|integration)\/.*/ := f.path];
+
 	return [f | /file(f) := getProject(project), f.extension == "java"];
 }
 
