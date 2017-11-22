@@ -51,14 +51,17 @@ int duplicatedLinesForMethod(tuple[str name, loc l, lrel[str omn, loc l2, lrel[i
 	return count;
 }
 
-int totalDuplicatedLines(set[Declaration] ast) {
-	list[tuple[str, loc]] methods = [<M.name, M.src> | /M:method(_, _, _, _, _) <- ast || /M:constructor(_, _, _, _) <- ast];
-	info = extractDuplicateInfo(methods);
-	return sum(([] | it + duplicatedLinesForMethod(m) | m <- info));
-}
+//public int totalDuplicatedLines(set[Declaration] ast) {
+//	list[tuple[str, loc]] methods = [<M.name, M.src> | /M:method(_, _, _, _, _) <- ast || /M:constructor(_, _, _, _) <- ast];
+//	println("methods retrieved");
+//	info = extractDuplicateInfo(methods);
+//	println("extraction complete");
+//	return sum(([] | it + duplicatedLinesForMethod(m) | m <- info));
+//}
 
 public int totalDuplicatedLines(list[Declaration] ast) {
 	list[tuple[str, loc]] methods = [<M.name, M.src> | /M:method(_, _, _, _, _) <- ast || /M:constructor(_, _, _, _) <- ast];
+	
 	println("methods retrieved");
 	info = extractDuplicateInfo(methods);
 	println("extraction complete");

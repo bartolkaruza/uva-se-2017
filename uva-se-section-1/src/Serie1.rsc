@@ -16,7 +16,7 @@ import CyclomaticComplexityAst;
 import LinesOfCode;
 
 
-public list[loc] allFiles(loc project){
+public list[loc] allFiles(loc project) {
 	//return [f | /file(f) := getProject(project), f.extension == "java", /^.*\/hsqldb\/(src|integration)\/.*/ := f.path];
 
 	return [f | /file(f) := getProject(project), f.extension == "java"];
