@@ -65,16 +65,20 @@ list[str] makeBlocks(list[str] myLines, int blockLength) {
 public bool temp() {
 	list[loc] files = [f | /file(f) := getProject(|project://hsqldb-2.3.1|), f.extension == "java"];
 	//list[loc] files = [|project://regression-set/src/regression/DuplicationVariants.java|];
-	list[str] content = [];
+
+	int count = 0;
 	for(file <- files) {
+		println(file);
+		list[str] content = [];
 		list[str] lines = readFileLines(file);
 		content += lines;
 		content -= emptyLines(lines);
 		content -= allCommentsLoc(lines);
 		content = [ trim(ln) | ln <- content];
+		findDuplicates(content, 6);
+		println(count);
 	}
 	//println(size(content));
-	int count = findDuplicates(content, 6);
 	println(count);
 
 	//for(block <- blocks) println(block);
