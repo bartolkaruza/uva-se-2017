@@ -223,11 +223,11 @@ public list[int] relativeUnitSize(lrel[str,int,int,loc] methods){
 // Threshold values are kept the same as complexity,
 // because they are not specified by the paper
 public int riskEvaluationUnitSize(int linesOfCode) {
-	if(linesOfCode <= 10) {
+	if(linesOfCode <= 30) {
 		return 0;
-	}else if(linesOfCode <= 20) {
+	}else if(linesOfCode <= 44) {
 		return 1;
-	}else if(linesOfCode <= 50) {
+	}else if(linesOfCode <= 74) {
 		return 2;
 	}else {
 		return 3;
