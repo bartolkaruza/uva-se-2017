@@ -9,8 +9,8 @@ import Set;
 import String;
 import CyclomaticComplexityAst;
 
-public M3 model = createM3FromEclipseProject(|project://example/src/regression|);
-public set[Declaration] ast = createAstsFromEclipseProject(|project://example/src/regression|, true);
+public M3 model = createM3FromEclipseProject(|project://regression-set|);
+public set[Declaration] ast = createAstsFromEclipseProject(|project://regression-set|, true);
 
 public list[Declaration] getTestClassBody() {
 visit (ast) {

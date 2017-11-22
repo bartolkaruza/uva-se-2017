@@ -56,16 +56,19 @@ public void calcSigModel(list[loc] files, set[Declaration] ast){
 	volumeResult = volumeRanking(totalLinesOfCode);
 	println("Volume: <volumeResult>");
 	println();
+	int linesOfCodeMethods = 0;
 	//CyclomaticComplexity build up <methodName, Complexity, methodLOC, LocationMethod>
 	lrel[str,int,int,loc] methods = complexityPerMethod(ast);
-	
+	for(<_,_, linesOfCode,_> <- methods){
+		linesOfCodeMethods += linesOfCode;	
+	}
 	println("Cyclomatic complexity: ");
-	complexityResult = systemComplexityRanking(toReal(totalLinesOfCode), relativeComplexity(methods));
+	complexityResult = systemComplexityRanking(toReal(linesOfCodeMethods), relativeComplexity(methods));
 	println("Comlexity: <complexityResult>");
 	println();
 	//Unit size
 	println("Unit size:");
-	unitSizeResult = systemComplexityRanking(toReal(totalLinesOfCode), relativeUnitSize(methods));
+	unitSizeResult = systemComplexityRanking(toReal(linesOfCodeMethods), relativeUnitSize(methods));
 	println("Unit size: <unitSizeResult>");
 	println();
 	
@@ -78,7 +81,7 @@ public void calcSigModel(list[loc] files, set[Declaration] ast){
 	println();
 	
 	println("Unit interfacing:");
-	str unitInterfacingResult = unitInterfaceRanking(toReal(totalLinesOfCode), relativeUnitInterfacing(unitInterfacing(ast)));
+	str unitInterfacingResult = unitInterfaceRanking(toReal(linesOfCodeMethods), relativeUnitInterfacing(unitInterfacing(ast)));
 	println();
 	
 	println("| Volume 		| <volumeResult>");

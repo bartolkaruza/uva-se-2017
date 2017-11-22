@@ -41,15 +41,15 @@ test bool shouldRank4() {
 
 test bool shouldRank3() {
 	str result = unitInterfaceRanking(toReal(1000), [15, 4, 2]);
-	return result == "o";
+	return result == "+";
 }
 
 test bool shouldRank2() {
 	str result = unitInterfaceRanking(toReal(1000), [30, 8, 3]);
-	return result == "++";
+	return result == "+";
 }
 
 test bool shouldRank1() {
 	str result = unitInterfaceRanking(toReal(1000), [5, 5, 40]);
-	return result == "++";
+	return result == "-";
 }

@@ -5,8 +5,8 @@ import lang::java::jdt::m3::Core;
 import LinesOfCode;
 import IO;
 
-list[loc] testData = [|project://example/src/regression/LinesOfCodeVariants.java|];
-M3 model = createM3FromFile(|project://example/src/regression/LinesOfCodeVariants.java|);
+list[loc] testData = [|project://regression-set/src/regression/LinesOfCodeVariants.java|];
+M3 model = createM3FromFile(|project://regression-set/src/regression/LinesOfCodeVariants.java|);
 
 test bool testClassesLoc() {
 	int result = classesLoc(testData);
