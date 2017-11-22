@@ -9,35 +9,36 @@ import lang::java::jdt::m3::Core;
 import lang::java::jdt::m3::AST;
 
 // Generate block variants
-public lrel[int, list[str]] makeBlocks(list[str] myLines, int blockLength) {
-	lrel[int, list[str]] blocks = [];
+lrel[int, list[str], str] makeBlocks(list[str] myLines, int blockLength) {
+	lrel[int, list[str], str] blocks = [];
 	list[str] linesWithoutMethodDeclaration = slice(myLines, 1, size(myLines) - 2);
 
 	for(currentLine <- linesWithoutMethodDeclaration) {
 		int index = indexOf(linesWithoutMethodDeclaration, currentLine);
 		if(size(linesWithoutMethodDeclaration) - (index + blockLength) < 0) return blocks;
-		tuple[int, list[str]] block = <index, [ l | l <- slice(linesWithoutMethodDeclaration, index, blockLength)]>;
+		list[str] lines =  [ l | l <- slice(linesWithoutMethodDeclaration, index, blockLength)];
+		tuple[int, list[str], str] block = <index, lines, ("" | it + line | line <- lines)>;
 		blocks = push(block, blocks);
 	}
 }
 
 // Extract duplicates
-bool testBlock(list[str] block, str method) {
-	return contains(method, ("" | it + line | line <- block));
+bool testBlock(str block, str method) {
+	return contains(method, block);
 }
 
-lrel[int, bool] testMethodBlocks(lrel[int, list[str]] blocks, tuple[str, loc, list[str]] toCompare) {
-	return [<ln, testBlock(block, ("" | it + l | l <- toCompare[2]))> | <int ln, list[str] block> <- blocks];
+lrel[int, bool] testMethodBlocks(lrel[int, list[str], str] blocks, tuple[str, loc, list[str], str] toCompare) {
+	return [<ln, testBlock(block, toCompare[3])> | <int ln, list[str] _, str block> <- blocks];
 }
 
-tuple[str, loc, lrel[str, loc, lrel[int, bool]]] testMethod(tuple[str n, loc l, list[str] lns] method, lrel[str, loc, list[str]] otherMethods) {
+tuple[str, loc, lrel[str, loc, lrel[int, bool]]] testMethod(tuple[str n, loc l, list[str] lns, str txt] method, lrel[str, loc, list[str], str] otherMethods) {
 	print("testing: ");
 	println(method.n);
-	return <method[0], method[1], [<m[0], m[1], testMethodBlocks(makeBlocks(method[2], 6), m)> | m <- otherMethods]>;
+	return <method[0], method[1], [<m[0], m[1], testMethodBlocks(makeBlocks(method.lns, 6), m)> | m <- otherMethods]>;
 }
 
 lrel[str, loc, lrel[str, loc, lrel[int, bool]]] extractDuplicateInfo(lrel[str, loc] methods) {
-	list[tuple[str, loc, list[str]]] methodsWithLines = mapper(methods, readMethod);
+	list[tuple[str, loc, list[str], str]] methodsWithLines = mapper(methods, readMethod);
 	return mapper(([] | it + testMethod(m, methodsWithLines[indexOf(methodsWithLines, m) + 1..]) | m <- methodsWithLines), filterNonDuplicate);
 }
 
@@ -56,7 +57,7 @@ int totalDuplicatedLines(set[Declaration] ast) {
 	return sum(([] | it + duplicatedLinesForMethod(m) | m <- info));
 }
 
-int totalDuplicatedLines(list[Declaration] ast) {
+public int totalDuplicatedLines(list[Declaration] ast) {
 	list[tuple[str, loc]] methods = [<M.name, M.src> | /M:method(_, _, _, _, _) <- ast || /M:constructor(_, _, _, _) <- ast];
 	println("methods retrieved");
 	info = extractDuplicateInfo(methods);
@@ -65,8 +66,9 @@ int totalDuplicatedLines(list[Declaration] ast) {
 }
 
 // Utility
-tuple[str, loc, list[str]] readMethod(tuple[str, loc] method) {
-	return <method[0], method[1], trimLines(readFileLines(method[1]))>;
+tuple[str, loc, list[str], str] readMethod(tuple[str, loc] method) {
+	list[str] lines = trimLines(readFileLines(method[1]));
+	return <method[0], method[1], lines, ("" | it + line | line <- lines)>;
 }
 
 public list[str] trimLines(list[str] lns) {
