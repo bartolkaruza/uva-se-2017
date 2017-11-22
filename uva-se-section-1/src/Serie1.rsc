@@ -21,6 +21,9 @@ public list[loc] allFiles(loc project){
 	return [f | /file(f) := getProject(project), f.extension == "java"];
 }
 
+public void runOnSe1(){
+	run(|project://uva-se-section-1/src|);
+}
 
 public void runModelOnRegressionSet(){
 	set[Declaration] astTest = createAstsFromEclipseProject(|project://regression-set|, true);
@@ -29,7 +32,7 @@ public void runModelOnRegressionSet(){
 }
 
 public void runSmallSql(){
-	//M3 model = createM3FromEclipseProject(|project://smallsql0.21_src|);
+	M3 model = createM3FromEclipseProject(|project://smallsql0.21_src|);
 	run(|project://smallsql0.21_src|);
 }
 
@@ -77,12 +80,15 @@ public str volumeRanking(int linesOfCode){
 
 public str systemComplexityRanking(real linesOfCode, list[int] comlexityMethods){
 	
-	//real c1 = comlexityMethods[0] / linesOfCode;
+	real c1 = comlexityMethods[0] / linesOfCode;
 	real c2 = comlexityMethods[1] / linesOfCode;
 	real c3 = comlexityMethods[2] / linesOfCode;	
 	real c4 = comlexityMethods[3] / linesOfCode;
 	
-	println("moderate: <c2>, high: <c3>, very high: <c4>");
+	println("|low		| <c1>");
+	println("|moderate	| <c2>");
+	println("|high		| <c3>");
+	println("|very high	| <c4>");
 	
 	if(c2 <= 0.20 && c3 <= 0.0 && c4 <= 0.0){
 		return "++";

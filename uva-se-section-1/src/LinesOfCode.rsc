@@ -36,6 +36,10 @@ public list[str] allCommentsLoc(list[str] content){
 	return singleLineComments + multiLineComments;
 }
 
+public list[str] emptyLines(list[str] file){
+	return [x| x <- file, /^$|^[\s\t]+$/ := x];
+}
+
 public list[str] singleLineCommentsLoc(list[str] file){
 	return [x| x <- file, /^[\s\t]*?\/{2,}.*/ := x];
 }
@@ -75,8 +79,4 @@ public tuple[int, list[str]] findEndInMultiLineComment(list[str] file, int i){
 		}
 	}
 	return <size(file), comments>;
-}
-
-public list[str] emptyLines(list[str] file){
-	return [x| x <- file, /^$|^[\s\t]+$/ := x];
 }
