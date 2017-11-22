@@ -19,7 +19,7 @@ import UnitInterfacing;
 
 
 public list[loc] allFiles(loc project) {
-	return [f | /file(f) := getProject(project), f.extension == "java", /^.*\/hsqldb\/(src|integration)\/.*/ := f.path];
+	//return [f | /file(f) := getProject(project), f.extension == "java", /^.*\/hsqldb\/(src|integration)\/.*/ := f.path];
 
 	return [f | /file(f) := getProject(project), f.extension == "java"];
 }
@@ -79,8 +79,8 @@ public void calcSigModel(list[loc] files, set[Declaration] ast){
 	println();
 	
 	println("Unit interfacing:");
-	interfaces = unitInterfacing(ast);
-	println("Number of interfaces: <size(interfaces)>");
+	unitInterfaces = unitInterfacing(ast);
+	println("Number of interfaces: <size(unitInterfaces)>");
 	println();
 	
 	println("| Volume 	| <volumeResult>");
