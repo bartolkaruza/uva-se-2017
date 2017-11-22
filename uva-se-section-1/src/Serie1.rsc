@@ -19,7 +19,7 @@ import UnitInterfacing;
 
 
 public list[loc] allFiles(loc project) {
-	//return [f | /file(f) := getProject(project), f.extension == "java", /^.*\/hsqldb\/(src|integration)\/.*/ := f.path];
+	return [f | /file(f) := getProject(project), f.extension == "java", /^.*\/hsqldb\/(src|integration)\/.*/ := f.path];
 
 	return [f | /file(f) := getProject(project), f.extension == "java"];
 }
@@ -79,8 +79,8 @@ public void calcSigModel(list[loc] files, set[Declaration] ast){
 	println();
 	
 	println("Unit interfacing:");
-	unitInterfaces = unitInterfacing(ast);
-	println("Number of interfaces: <size(unitInterfaces)>");
+	interfaces = unitInterfacing(ast);
+	println("Number of interfaces: <size(interfaces)>");
 	println();
 	
 	println("| Volume 	| <volumeResult>");
@@ -126,7 +126,6 @@ public str volumeRanking(int linesOfCode){
 	}
 	return "--";
 }
-
 
 public str unitInterfacing(real linesOfCode, list[int] comlexityMethods){
 	
@@ -178,6 +177,48 @@ public str systemComplexityRanking(real linesOfCode, list[int] comlexityMethods)
 	}
 }
 
+public str unitInterfaceRanking(real linesOfCode, list[int] categories){
+	
+	real c1 = categories[0] / linesOfCode;
+	real c2 = categories[1] / linesOfCode;
+	real c3 = categories[2] / linesOfCode;
+	
+	println("| low		| <c1>");
+	println("| moderate	| <c2>");
+	println("| high		| <c3>");
+	
+	if(c1 <= 0.05 && c2 <= 0.0 && c3 <= 0.0){
+		return "++";
+	}else if(c1 <= 0.139 && c2 <= 0.028 && c3 <= 0.008){
+		return "+";
+	}else if(c1 <= 0.20 && c2 <= 0.05 && c3 <= 0.03){
+		return "o";
+	}else if(c1 <= 0.40 && c2 <= 0.10 && c3 <= 0.05){
+		return "-";
+	}else {
+		return "--";
+	}
+}
+
+public list[int] relativeUnitInterfacing(lrel[str,int,int] interfaces){
+	list[int] unitInterfacingRanking = [0,0,0];
+
+	for(<_,numberOfParams, linesOfCode> <- interfaces){
+			
+			if(numberOfParams > 2){
+				unitInterfacingRanking[0] += linesOfCode;
+			}
+			if(numberOfParams > 4){
+				unitInterfacingRanking[1] += linesOfCode;
+			}
+			if(numberOfParams > 6){
+				unitInterfacingRanking[2] += linesOfCode;
+			}
+	}
+	
+	return unitInterfacingRanking;
+}
+
 public list[int] relativeComplexity(lrel[str,int,int,loc] methods){
 	list[int] complexityRanking = [0,0,0,0];
 
@@ -198,40 +239,8 @@ public list[int] relativeUnitSize(lrel[str,int,int,loc] methods){
 	return unitSizeRanking;
 }
 
-public list[int] relativeUnitInterfacing(lrel[str,int,int] interfaces){
-	list[int] unitInterfacingRanking = [0,0,0];
 
-	for(<_,numberOfParams, linesOfCode> <- methods){
-			
-			if(numberOfParams > 2){
-				unitInterfacingRanking[0] += linesOfCode;
-			}
-			if(numberOfParams > 4){
-				unitInterfacingRanking[1] += linesOfCode;
-			}
-			if(numberOfParams > 6){
-				unitInterfacingRanking[2] += linesOfCode;
-			}
-	
-	}
-	
-	return unitInterfacingRanking;
-}
-
-public int riskEvaluationInterface(int numberOfParams){
-	if(complexity > 2){
-		return 0;
-	}
-	if(complexity > 5){
-		return 1;
-	}
-	if(complexity > 7){
-		return 2;
-	}
-	return 3;
-}
-
-// Threshold values are kept the samme as complexity,
+// Threshold values are kept the same as complexity,
 // because they are not specified by the paper
 public int riskEvaluationUnitSize(int linesOfCode) {
 	if(linesOfCode <= 10) {
@@ -260,11 +269,11 @@ public int riskEvaluationComplexity(int complexity){
 public str duplicationRanking(real duplication){
 	if(duplication <= 0.03){
 		return "++";
-	}else if(duplication > 0.03 && duplication <= 0.05){
+	}else if(duplication <= 0.05){
 		return "+";
-	}else if(duplication > 0.05 && duplication <= 0.10){
+	}else if(duplication <= 0.10){
 		return "o";
-	}else if(duplication > 0.10 && duplication <= 0.20){
+	}else if(duplication <= 0.20){
 		return "-";
 	}else {
 		return "--";
