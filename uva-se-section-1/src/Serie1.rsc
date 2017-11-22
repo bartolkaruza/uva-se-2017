@@ -52,16 +52,17 @@ public void calcSigModel(list[loc] files, set[Declaration] ast){
 	int totalLinesOfCode = classesLoc(files);
 	println("Total Lines of Code: <totalLinesOfCode>");
 	println("Volume: <volumeRanking(totalLinesOfCode)>");
-	
+	println();
 	//CyclomaticComplexity build up <methodName, Complexity, methodLOC, LocationMethod>
 	lrel[str,int,int,loc] methods = complexityPerMethod(ast);
 	
 	println("Cyclomatic complexity: ");
 	println("Comlexity: <systemComplexityRanking(toReal(totalLinesOfCode), relativeComplexity(methods))>");
-	
+	println();
 	//Unit size
 	println("Unit size");
 	println("Unit size: <systemComplexityRanking(toReal(totalLinesOfCode), relativeUnitSize(methods))>");
+	println();
 }
 
 public str volumeRanking(int linesOfCode){
