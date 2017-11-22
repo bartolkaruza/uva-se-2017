@@ -19,8 +19,7 @@ import UnitInterfacing;
 
 
 public list[loc] allFiles(loc project) {
-	return [f | /file(f) := getProject(project), f.extension == "java", /^.*\/hsqldb\/(src|integration)\/.*/ := f.path];
-
+	//return [f | /file(f) := getProject(project), f.extension == "java", /^.*\/hsqldb\/(src|integration)\/.*/ := f.path];
 	return [f | /file(f) := getProject(project), f.extension == "java"];
 }
 
@@ -79,15 +78,14 @@ public void calcSigModel(list[loc] files, set[Declaration] ast){
 	println();
 	
 	println("Unit interfacing:");
-	interfaces = unitInterfacing(ast);
-	println("Number of interfaces: <size(interfaces)>");
+	str unitInterfacingResult = unitInterfaceRanking(toReal(totalLinesOfCode), relativeUnitInterfacing(unitInterfacing(ast)));
 	println();
 	
-	println("| Volume 	| <volumeResult>");
-	println("| Comlexity	| <complexityResult>");
-	println("| Unit size	| <unitSizeResult>");
-	println("| Duplicates	| <duplicationResult>");
-	println();
+	println("| Volume 			| <volumeResult>");
+	println("| Comlexity			| <complexityResult>");
+	println("| Unit size			| <unitSizeResult>");
+	println("| Duplicates		| <duplicationResult>");
+	println("| Unit Interfaces	| <unitInterfacingResult>");
 	sigToIsoModel(complexityResult, unitSizeResult, volumeResult, duplicationResult);
 }
 
@@ -125,31 +123,6 @@ public str volumeRanking(int linesOfCode){
 		return "-";
 	}
 	return "--";
-}
-
-public str unitInterfacing(real linesOfCode, list[int] comlexityMethods){
-	
-	real c1 = comlexityMethods[0] / linesOfCode;
-	real c2 = comlexityMethods[1] / linesOfCode;
-	real c3 = comlexityMethods[2] / linesOfCode;	
-	real c4 = comlexityMethods[3] / linesOfCode;
-	
-	println("|low		| <c1>");
-	println("|moderate	| <c2>");
-	println("|high		| <c3>");
-	println("|very high	| <c4>");
-	
-	if(c2 <= 0.20 && c3 <= 0.0 && c4 <= 0.0){
-		return "++";
-	}else if(c2 <= 0.30 && c3 <= 0.05 && c4 <= 0.0){
-		return "+";
-	}else if(c2 <= 0.40 && c3 <= 0.1 && c4 <= 0.0){
-		return "o";
-	}else if(c2 <= 0.50 && c3 <= 0.15 && c4 <= 0.05){
-		return "-";
-	}else {
-		return "--";
-	}
 }
 
 public str systemComplexityRanking(real linesOfCode, list[int] comlexityMethods){
