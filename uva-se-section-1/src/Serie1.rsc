@@ -85,7 +85,7 @@ public void calcSigModel(list[loc] files, set[Declaration] ast){
 	println("| Comlexity		| <complexityResult>");
 	println("| Unit size		| <unitSizeResult>");
 	println("| Duplicates		| <duplicationResult>");
-	println("| Unit Interfaces	| <unitInterfacingResult>");
+	println("| Unit Interfacing	| <unitInterfacingResult>");
 	println();
 	sigToIsoModel(complexityResult, unitSizeResult, volumeResult, duplicationResult, unitInterfacingResult);
 }
@@ -105,11 +105,11 @@ public void sigToIsoModel(str complexity, str unitSize, str linesOfCode, str dup
 	reusability = (u + i)/2;
 	tInverted = invert(t);
 	
-	println("| analysability		| <tInverted[analysability]>");
-	println("| changeability 	| <tInverted[changeability]>");
+	println("| analysability		| <takeOneFrom(tInverted[analysability])[0]>");
+	println("| changeability 	| <takeOneFrom(tInverted[changeability])[0]>");
 	println("| stability 		|");
-	println("| testability 		| <tInverted[testability]>");
-	println("| reusability		| <tInverted[reusability]>");
+	println("| testability 		| <takeOneFrom(tInverted[testability])[0]>");
+	println("| reusability		| <takeOneFrom(tInverted[reusability])[0]>");
 	
 }
 
