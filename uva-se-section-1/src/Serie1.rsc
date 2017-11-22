@@ -14,10 +14,12 @@ import util::Resources;
 
 import CyclomaticComplexityAst;
 import LinesOfCode;
+import DuplicationSimple;
+import UnitInterfacing;
 
 
 public list[loc] allFiles(loc project) {
-	//return [f | /file(f) := getProject(project), f.extension == "java", /^.*\/hsqldb\/(src|integration)\/.*/ := f.path];
+	return [f | /file(f) := getProject(project), f.extension == "java", /^.*\/hsqldb\/(src|integration)\/.*/ := f.path];
 
 	return [f | /file(f) := getProject(project), f.extension == "java"];
 }
@@ -63,45 +65,66 @@ public void calcSigModel(list[loc] files, set[Declaration] ast){
 	println("Comlexity: <complexityResult>");
 	println();
 	//Unit size
-	println("Unit size");
+	println("Unit size:");
 	unitSizeResult = systemComplexityRanking(toReal(totalLinesOfCode), relativeUnitSize(methods));
 	println("Unit size: <unitSizeResult>");
 	println();
 	
-	sigToIsoModel(complexityResult, unitSizeResult, volumeResult);
+	//Duplicate
+	println("Duplicates:");
+	numberOfDuplicates = toReal(duplicateLoc(files));
+	println("Number of duplicates: <numberOfDuplicates> percentage <numberOfDuplicates/toReal(totalLinesOfCode)>");
+	duplicationResult = duplicationRanking(numberOfDuplicates/toReal(totalLinesOfCode));
+	println("rating: <duplicationResult>");
+	println();
+	
+	println("Unit interfacing:");
+	interfaces = unitInterfacing(ast);
+	println("Number of interfaces: <size(interfaces)>");
+	println();
+	
+	println("| Volume 	| <volumeResult>");
+	println("| Comlexity	| <complexityResult>");
+	println("| Unit size	| <unitSizeResult>");
+	println("| Duplicates	| <duplicationResult>");
+	println();
+	sigToIsoModel(complexityResult, unitSizeResult, volumeResult, duplicationResult);
 }
 
-public void sigToIsoModel(str complexity, str unitSize, str linesOfCode){
+public void sigToIsoModel(str complexity, str unitSize, str linesOfCode, str duplication){
 	t = ("--":1, "-":2, "o":3, "+":4, "++":5);
 	c = t[complexity];
 	u = t[unitSize];
 	v = t[linesOfCode];
+	d = t[duplication];
 	
-	analysability = (v + u)/2;
-	changeability = (c)/1;
+	analysability = (v + u + d)/3;
+	changeability = (c + d)/2;
 	//stability = ()/2;
 	testability = (c + u)/2;
 	tInverted = invert(t);
 	
-	println("| analysability 	<tInverted[analysability]>");
-	println("| changeability 	<tInverted[changeability]>");
+	println("| analysability	| <tInverted[analysability]>");
+	println("| changeability 	| <tInverted[changeability]>");
 	println("| stability 		");
-	println("| testability 		<tInverted[testability]>");
+	println("| testability 		| <tInverted[testability]>");
 	
 }
 
 public str volumeRanking(int linesOfCode){
 	if(linesOfCode <= 66000){
 		return "++";
-	}else if(linesOfCode >= 67000 && linesOfCode <= 246000){
+	} 
+	if(linesOfCode > 66000 && linesOfCode <= 246000){
 		return "+";
-	}else if(linesOfCode >= 247000 && linesOfCode <= 665000){
-		return "o";
-	}else if(linesOfCode >= 666000 && linesOfCode <= 1310000){
-		return "-";
-	}else {
-		return "--";
 	}
+	if(linesOfCode > 246000 && linesOfCode <= 665000){
+		return "o";
+	}
+	if(linesOfCode > 665000 && linesOfCode <= 1310000){
+		return "-";
+	}
+	return "--";
 }
 
 public str systemComplexityRanking(real linesOfCode, list[int] comlexityMethods){
@@ -111,10 +134,10 @@ public str systemComplexityRanking(real linesOfCode, list[int] comlexityMethods)
 	real c3 = comlexityMethods[2] / linesOfCode;	
 	real c4 = comlexityMethods[3] / linesOfCode;
 	
-	println("|low		| <c1>");
-	println("|moderate	| <c2>");
-	println("|high		| <c3>");
-	println("|very high	| <c4>");
+	println("| low		| <c1>");
+	println("| moderate	| <c2>");
+	println("| high		| <c3>");
+	println("| veryhigh	| <c4>");
 	
 	if(c2 <= 0.20 && c3 <= 0.0 && c4 <= 0.0){
 		return "++";
@@ -149,14 +172,61 @@ public list[int] relativeUnitSize(lrel[str,int,int,loc] methods){
 	return unitSizeRanking;
 }
 
+public list[int] relativeUnitInterfacing(lrel[str,int,int] interfaces){
+	list[int] unitInterfacingRanking = [0,0,0];
+
+	for(<_,numberOfParams, linesOfCode> <- methods){
+			
+			if(numberOfParams > 2){
+				unitInterfacingRanking[0] += linesOfCode;
+			}
+			if(numberOfParams > 4){
+				unitInterfacingRanking[1] += linesOfCode;
+			}
+			if(numberOfParams > 6){
+				unitInterfacingRanking[2] += linesOfCode;
+			}
+	
+	}
+	
+	return unitInterfacingRanking;
+}
+
+public int riskEvaluationInterface(int numberOfParams){
+	if(complexity > 2){
+		return 0;
+	}
+	if(complexity > 5){
+		return 1;
+	}
+	if(complexity > 7){
+		return 2;
+	}
+	return 3;
+}
+
 public int riskEvaluationMethod(int complexity){
 	if(complexity <= 10){
 		return 0;
-	}else if(complexity >= 11 && complexity <= 20){
+	}else if(complexity > 10 && complexity <= 20){
 		return 1;
-	}else if(complexity >= 21 && complexity <= 50){
+	}else if(complexity > 20 && complexity <= 50){
 		return 2;
 	}else {
 		return 3;
+	}
+}
+
+public str duplicationRanking(real duplication){
+	if(duplication <= 0.03){
+		return "++";
+	}else if(duplication > 0.03 && duplication <= 0.05){
+		return "+";
+	}else if(duplication > 0.05 && duplication <= 0.10){
+		return "o";
+	}else if(duplication > 0.10 && duplication <= 0.20){
+		return "-";
+	}else {
+		return "--";
 	}
 }

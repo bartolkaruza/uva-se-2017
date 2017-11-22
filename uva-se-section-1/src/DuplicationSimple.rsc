@@ -37,7 +37,6 @@ public int duplicateLoc(list[loc] files) {
 	int count = 0;
 	set[str] blocks = {};
 	for(file <- files) {
-		println(file);
 		list[str] content = readFileLines(file);
 		content -= emptyLines(content);
 		content -= allCommentsLoc(content);
