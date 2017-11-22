@@ -81,31 +81,35 @@ public void calcSigModel(list[loc] files, set[Declaration] ast){
 	str unitInterfacingResult = unitInterfaceRanking(toReal(totalLinesOfCode), relativeUnitInterfacing(unitInterfacing(ast)));
 	println();
 	
-	println("| Volume 			| <volumeResult>");
-	println("| Comlexity			| <complexityResult>");
-	println("| Unit size			| <unitSizeResult>");
+	println("| Volume 		| <volumeResult>");
+	println("| Comlexity		| <complexityResult>");
+	println("| Unit size		| <unitSizeResult>");
 	println("| Duplicates		| <duplicationResult>");
 	println("| Unit Interfaces	| <unitInterfacingResult>");
-	sigToIsoModel(complexityResult, unitSizeResult, volumeResult, duplicationResult);
+	println();
+	sigToIsoModel(complexityResult, unitSizeResult, volumeResult, duplicationResult, unitInterfacingResult);
 }
 
-public void sigToIsoModel(str complexity, str unitSize, str linesOfCode, str duplication){
+public void sigToIsoModel(str complexity, str unitSize, str linesOfCode, str duplication, str unitInterface){
 	t = ("--":1, "-":2, "o":3, "+":4, "++":5);
 	c = t[complexity];
 	u = t[unitSize];
 	v = t[linesOfCode];
 	d = t[duplication];
+	i = t[unitInterface];
 	
 	analysability = (v + u + d)/3;
 	changeability = (c + d)/2;
 	//stability = ()/2;
 	testability = (c + u)/2;
+	reusability = (u + i)/2;
 	tInverted = invert(t);
 	
-	println("| analysability	| <tInverted[analysability]>");
+	println("| analysability		| <tInverted[analysability]>");
 	println("| changeability 	| <tInverted[changeability]>");
-	println("| stability 		");
+	println("| stability 		|");
 	println("| testability 		| <tInverted[testability]>");
+	println("| reusability		| <tInverted[reusability]>");
 	
 }
 
@@ -198,7 +202,7 @@ public list[int] relativeComplexity(lrel[str,int,int,loc] methods){
 	for(<_,complexity, linesOfCode,_> <- methods){
 		complexityRanking[riskEvaluationComplexity(complexity)] += linesOfCode;
 	}
-	
+
 	return complexityRanking;
 }
 
