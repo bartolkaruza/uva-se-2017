@@ -7,6 +7,7 @@ import lang::java::jdt::m3::AST;
 import List;
 import Set;
 import Relation;
+import Map;
 import String;
 import util::Math;
 import util::Resources;
@@ -51,18 +52,42 @@ public void calcSigModel(list[loc] files, set[Declaration] ast){
 	
 	int totalLinesOfCode = classesLoc(files);
 	println("Total Lines of Code: <totalLinesOfCode>");
-	println("Volume: <volumeRanking(totalLinesOfCode)>");
+	volumeResult = volumeRanking(totalLinesOfCode);
+	println("Volume: <volumeResult>");
 	println();
 	//CyclomaticComplexity build up <methodName, Complexity, methodLOC, LocationMethod>
 	lrel[str,int,int,loc] methods = complexityPerMethod(ast);
 	
 	println("Cyclomatic complexity: ");
-	println("Comlexity: <systemComplexityRanking(toReal(totalLinesOfCode), relativeComplexity(methods))>");
+	complexityResult = systemComplexityRanking(toReal(totalLinesOfCode), relativeComplexity(methods));
+	println("Comlexity: <complexityResult>");
 	println();
 	//Unit size
 	println("Unit size");
-	println("Unit size: <systemComplexityRanking(toReal(totalLinesOfCode), relativeUnitSize(methods))>");
+	unitSizeResult = systemComplexityRanking(toReal(totalLinesOfCode), relativeUnitSize(methods));
+	println("Unit size: <unitSizeResult>");
 	println();
+	
+	sigToIsoModel(complexityResult, unitSizeResult, volumeResult);
+}
+
+public void sigToIsoModel(str complexity, str unitSize, str linesOfCode){
+	t = ("--":1, "-":2, "o":3, "+":4, "++":5);
+	c = t[complexity];
+	u = t[unitSize];
+	v = t[linesOfCode];
+	
+	analysability = (v + u)/2;
+	changeability = (c)/1;
+	//stability = ()/2;
+	testability = (c + u)/2;
+	tInverted = invert(t);
+	
+	println("| analysability 	<tInverted[analysability]>");
+	println("| changeability 	<tInverted[changeability]>");
+	println("| stability 		");
+	println("| testability 		<tInverted[testability]>");
+	
 }
 
 public str volumeRanking(int linesOfCode){
