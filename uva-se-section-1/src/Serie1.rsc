@@ -28,12 +28,12 @@ public void runOnSe1(){
 
 public void runModelOnRegressionSet(){
 	set[Declaration] astTest = createAstsFromEclipseProject(|project://regression-set|, true);
-	M3 modelTest = createM3FromEclipseProject(|project://regression-set|);
+	//M3 modelTest = createM3FromEclipseProject(|project://regression-set|);
 	calcSigModel(modelTest, astTest);
 }
 
 public void runSmallSql(){
-	M3 model = createM3FromEclipseProject(|project://smallsql0.21_src|);
+	//M3 model = createM3FromEclipseProject(|project://smallsql0.21_src|);
 	run(|project://smallsql0.21_src|);
 }
 
@@ -42,7 +42,7 @@ public void runHsqlDb() {
 }
 
 public void run(loc project){
-	M3 model = createM3FromEclipseProject(project);
+	//M3 model = createM3FromEclipseProject(project);
 	set[Declaration] ast = createAstsFromEclipseProject(project, true);
 	calcSigModel(allFiles(project), ast);
 }
