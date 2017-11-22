@@ -127,6 +127,32 @@ public str volumeRanking(int linesOfCode){
 	return "--";
 }
 
+
+public str unitInterfacing(real linesOfCode, list[int] comlexityMethods){
+	
+	real c1 = comlexityMethods[0] / linesOfCode;
+	real c2 = comlexityMethods[1] / linesOfCode;
+	real c3 = comlexityMethods[2] / linesOfCode;	
+	real c4 = comlexityMethods[3] / linesOfCode;
+	
+	println("|low		| <c1>");
+	println("|moderate	| <c2>");
+	println("|high		| <c3>");
+	println("|very high	| <c4>");
+	
+	if(c2 <= 0.20 && c3 <= 0.0 && c4 <= 0.0){
+		return "++";
+	}else if(c2 <= 0.30 && c3 <= 0.05 && c4 <= 0.0){
+		return "+";
+	}else if(c2 <= 0.40 && c3 <= 0.1 && c4 <= 0.0){
+		return "o";
+	}else if(c2 <= 0.50 && c3 <= 0.15 && c4 <= 0.05){
+		return "-";
+	}else {
+		return "--";
+	}
+}
+
 public str systemComplexityRanking(real linesOfCode, list[int] comlexityMethods){
 	
 	real c1 = comlexityMethods[0] / linesOfCode;
@@ -156,7 +182,7 @@ public list[int] relativeComplexity(lrel[str,int,int,loc] methods){
 	list[int] complexityRanking = [0,0,0,0];
 
 	for(<_,complexity, linesOfCode,_> <- methods){
-		complexityRanking[riskEvaluationMethod(complexity)] += linesOfCode;
+		complexityRanking[riskEvaluationComplexity(complexity)] += linesOfCode;
 	}
 	
 	return complexityRanking;
@@ -166,7 +192,7 @@ public list[int] relativeUnitSize(lrel[str,int,int,loc] methods){
 	list[int] unitSizeRanking = [0,0,0,0];
 
 	for(<_,_, linesOfCode,_> <- methods){
-		unitSizeRanking[riskEvaluationMethod(linesOfCode)] += linesOfCode;
+		unitSizeRanking[riskEvaluationUnitSize(linesOfCode)] += linesOfCode;
 	}
 	
 	return unitSizeRanking;
@@ -205,7 +231,21 @@ public int riskEvaluationInterface(int numberOfParams){
 	return 3;
 }
 
-public int riskEvaluationMethod(int complexity){
+// Threshold values are kept the samme as complexity,
+// because they are not specified by the paper
+public int riskEvaluationUnitSize(int linesOfCode) {
+	if(linesOfCode <= 10) {
+		return 0;
+	}else if(linesOfCode <= 20) {
+		return 1;
+	}else if(linesOfCode <= 50) {
+		return 2;
+	}else {
+		return 3;
+	}
+}
+
+public int riskEvaluationComplexity(int complexity){
 	if(complexity <= 10){
 		return 0;
 	}else if(complexity > 10 && complexity <= 20){
