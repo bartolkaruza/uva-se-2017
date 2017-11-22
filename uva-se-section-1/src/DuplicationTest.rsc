@@ -21,6 +21,6 @@ visit (ast) {
 
 test bool shouldCountThreeOccurences() {
 	println("result");
-	println(totalDuplicatedLines(ast));	
+	println(totalDuplicatedLines(getTestClassBody()));	
 	return true;
 }
