@@ -16,12 +16,6 @@ import util::Resources;
 import Node;
 
 
-
-
-public list[loc] projectFiles(loc project) {
-	return [f | /file(f) := getProject(project), f.extension == "java"];
-}
-
 map[value, set[loc]] duplicates = ();
 set[value] coveredChildNodes = {};
 
@@ -31,12 +25,12 @@ public map[value, set[loc]] RunSerie2(){
 	
 	println("Building ast");
 	
-	//set[Declaration] ast = createAstsFromEclipseProject(|project://SystemUnderTest|, true);
+	set[Declaration] ast = createAstsFromEclipseProject(|project://SystemUnderTest|, true);
 	//set[Declaration] ast = createAstsFromEclipseProject(|project://smallsql0.21_src|, true);
-	set[Declaration] ast = createAstsFromEclipseProject(|project://hsqldb-2.3.1|, true);
+	//set[Declaration] ast = createAstsFromEclipseProject(|project://hsqldb-2.3.1|, true);
 	
 	println("search duplicates");
-	visitAllNodes(ast);
+	findDuplicates(ast);
 	
 	println("Found all duplicates");
     //duplicates = (d : duplicates[d] | d <- duplicates, size(duplicates[d]) > 1, !d in coverdChildNodes);
@@ -52,7 +46,7 @@ public map[value, set[loc]] RunSerie2(){
 
 // Visit all nodes and add it to a Map
 // Need to tweak cases
-public void visitAllNodes(set[Declaration] ast){
+public void findDuplicates(set[Declaration] ast){
     bottom-up visit (ast) {
         case Statement s: 
 	        addNode(s, s.src);	
@@ -66,7 +60,7 @@ public void visitAllNodes(set[Declaration] ast){
 }
 
 public void addNode(node n, loc src){
-	if(validNode(n)){
+	if(isValidNode(n, src)){
 		n = unsetRec(n);
 		n = cleanNodeForType2(n);
 		if(n in duplicates){
@@ -90,6 +84,7 @@ public void removeChilderen(node parent){
     }
 }
 
+// Case to switch statement to clean names, see commented method
 public node cleanNodeForType2(node n){
 	//switch(n){
 	//	case \method(a, b, c, d, e): return method(a, "", c, d, e);// Ignore method name
@@ -97,12 +92,18 @@ public node cleanNodeForType2(node n){
 	return n;
 }
 
-public bool validNode(node n){
+public bool isValidNode(node n, loc src){
+	if(src.scheme == "unknown"){
+		return false;
+	}else if(src.begin.line == src.end.line){ // Single line code count as duplicate???
+		return false;
+	}	
+
 	switch(n){
 		case \import(_): return false;
 		case \package(_): return false;
 		case \package(_, _): return false;
-		case \declarationStatement(_): return false;
+		//case \declarationStatement(_): return false;
 		case \break(): return false;
     	case \break(_): return false;
     	case \parameter(_,_,_): return false;
