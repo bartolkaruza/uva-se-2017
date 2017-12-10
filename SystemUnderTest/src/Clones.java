@@ -9,10 +9,16 @@ public class Clones {
 	}
 	
 	void classOneOccurrenceTwo() {
-		int x = 0;
-		x++;
-		x--;
-		System.out.println(x);
+		int x = 0; x++; x--; System.out.println(x);
+	}
+	
+	void classOneOccurrenceThree() {
+		if(true) {
+			int x = 0;
+			x++;
+			x--;	
+			System.out.println(x);
+		}
 	}
 	
 	
@@ -48,7 +54,7 @@ public class Clones {
 		System.out.println(x);
 	}
 	
-	void classThreeOccurenceThree() {
+	void classThreeOccurenceTwo() {
 		int x = 0;
 		x++;
 		

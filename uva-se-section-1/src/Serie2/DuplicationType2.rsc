@@ -22,10 +22,15 @@ public map[value, set[loc]] findType2Duplicates(set[Declaration] ast) {
 
 	bottom-up visit (ast) {
         case Statement s: {
-	        duplicates = addNode(s, s.src, duplicates, coveredChildNodes);	
+	        tuple[map[value, set[loc]], set[value]] result = addNode(s, s.src, duplicates, coveredChildNodes);
+	        duplicates = result[0];
+	        coveredChildNodes += result[1];	
 	    }
-	    case Declaration d:
-	    		duplicates = addNode(d, d.src, duplicates, coveredChildNodes);
+	    case Declaration d: {
+	    		tuple[map[value, set[loc]], set[value]] result = addNode(d, d.src, duplicates, coveredChildNodes);
+	        duplicates = result[0];
+	        coveredChildNodes += result[1];
+	    }
 	    //case Expression e:
 	    //	addNode(e, e.src);
 	    //case node n:
@@ -37,22 +42,24 @@ public map[value, set[loc]] findType2Duplicates(set[Declaration] ast) {
 
 
 
-map[value, set[loc]] addNode(node n, loc src, map[value, set[loc]] duplicates, set[value] coveredChildNodes) {
+tuple[map[value, set[loc]], set[value]] addNode(node n, loc src, map[value, set[loc]] duplicates, set[value] coveredChildNodes) {
+	set[value] childDuplicates = {};
 	if(isValidNode(n, src)){
 		n = unsetRec(n);
 		n = cleanNodeForType2(n);
 		if(n in duplicates) {
 			duplicates[n] += {src}; 	
-	   		//removeChilderen(n, duplicates, coveredChildNodes); // We dont need the childeren if the parent is in duplicates
+	   		childDuplicates += getDuplicateChildren(n, duplicates); // We dont need the childeren if the parent is in duplicates
 		} else {
 	    		duplicates[n] = {src};
 		}
 	}
-	return duplicates;
+	return <duplicates, childDuplicates>;
 }
 
-void removeChilderen(node parent,map[value, set[loc]] duplicates, set[value] coveredChildNodes){
+set[value] getDuplicateChildren(node parent, map[value, set[loc]] duplicates) {
 	//Revisiting is needed because of a bug
+	set[value] coveredChildNodes = {};
     bottom-up visit (getChildren(parent)) {
         case node n:if(n in duplicates) {
         		if(size(duplicates[n]) == size(duplicates[parent])){// BY REMOVING THIS STATEMENT YOU GET EXACT COPIES
@@ -60,13 +67,21 @@ void removeChilderen(node parent,map[value, set[loc]] duplicates, set[value] cov
         		}
         } 
     }
+    return coveredChildNodes;
 }
 
 // Case to switch statement to clean names, see commented method
 node cleanNodeForType2(node n) {
-	//switch(n){
-	//	case \method(a, b, c, d, e): return method(a, "", c, d, e);// Ignore method name
-	//}
+	switch(n){
+		case \method(a, b, c, d, e): return method(a, "", c, d, e);
+		case \method(a, b, c, d): return method(a, "", c, d);
+		
+		// TODO Not working yet : cleanNodeForType2SimpleName && cleanNodeForType2Variable && cleanNodeForType2VariableWithExpression
+		case \variable(n, b): return variable("", b);
+		case \simpleName(n): {
+			return simpleName("");
+		}
+	}
 	return n;
 }
 
