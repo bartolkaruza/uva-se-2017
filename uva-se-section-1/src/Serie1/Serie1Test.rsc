@@ -1,4 +1,4 @@
-module Serie1Test
+module Serie1::Serie1Test
 
 import Serie1;
 import IO;
