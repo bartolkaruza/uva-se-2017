@@ -1,13 +1,15 @@
-module DuplicationType2
+module Serie2::DuplicationType2
 
+import IO;
+import lang::java::m3::Core;
+import lang::java::jdt::m3::Core;
+import lang::java::jdt::m3::AST;
 import List;
 import Set;
 import Relation;
 import Map;
 import String;
-import lang::java::m3::Core;
-import lang::java::jdt::m3::Core;
-import lang::java::jdt::m3::AST;
+import Node;
 import util::Math;
 import util::Resources;
 
