@@ -1,4 +1,4 @@
-module CyclomaticComplexityAst
+module Serie1::CyclomaticComplexityAst
 
 import LinesOfCode;
 import lang::java::m3::Core;

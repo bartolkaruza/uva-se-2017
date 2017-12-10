@@ -12,10 +12,10 @@ import String;
 import util::Math;
 import util::Resources;
 
-import CyclomaticComplexityAst;
-import LinesOfCode;
-import DuplicationSimple;
-import UnitInterfacing;
+import Serie1::CyclomaticComplexityAst;
+import Serie1::LinesOfCode;
+import common::DuplicationSimple;
+import Serie1::UnitInterfacing;
 
 
 public list[loc] allFiles(loc project) {

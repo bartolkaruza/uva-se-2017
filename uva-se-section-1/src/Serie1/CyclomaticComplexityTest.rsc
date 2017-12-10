@@ -1,4 +1,4 @@
-module CyclomaticComplexityTest
+module Serie1::CyclomaticComplexityTest
 
 import IO;
 import lang::java::m3::Core;
@@ -7,7 +7,7 @@ import lang::java::jdt::m3::AST;
 import List;
 import Set;
 import String;
-import CyclomaticComplexityAst;
+import Serie1::CyclomaticComplexityAst;
 
 public M3 model = createM3FromEclipseProject(|project://regression-set|);
 public set[Declaration] ast = createAstsFromEclipseProject(|project://regression-set|, true);

@@ -1,4 +1,4 @@
-module DuplicationSimple
+module common::DuplicationSimple
 
 import IO;
 import util::Resources;

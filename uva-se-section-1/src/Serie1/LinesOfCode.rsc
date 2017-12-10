@@ -1,4 +1,4 @@
-module LinesOfCode
+module Serie1::LinesOfCode
 
 import IO;
 import List;

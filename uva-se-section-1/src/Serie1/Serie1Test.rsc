@@ -1,6 +1,6 @@
 module Serie1::Serie1Test
 
-import Serie1;
+import Serie1::Serie1;
 import IO;
 import util::Math;
 

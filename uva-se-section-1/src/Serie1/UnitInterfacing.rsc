@@ -1,4 +1,4 @@
-module UnitInterfacing
+module Serie1::UnitInterfacing
 
 import IO;
 import lang::java::m3::Core;
@@ -11,7 +11,7 @@ import Map;
 import String;
 import util::Math;
 import util::Resources;
-import LinesOfCode;
+import Serie1::LinesOfCode;
 
 //public set[Declaration] ast = {createAstFromFile(|project://example/src/regression/UnitInterfacingVariants.java|, true)};
 
