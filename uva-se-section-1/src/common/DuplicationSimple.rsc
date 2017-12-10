@@ -26,7 +26,7 @@ tuple[bool, int, set[str]] checkBlock(str block, bool previousMatch, set[str] bl
 	return <previousMatch, count, blocks>;
 }
 
-public tuple[set[str], int] duplicateForLines(list[str] myLines, int blockLength, set[str] blocks) {
+tuple[set[str], int] duplicateForLines(list[str] myLines, int blockLength, set[str] blocks) {
 	int index = 0;
 	int count = 0;
 	bool previousMatch = false;

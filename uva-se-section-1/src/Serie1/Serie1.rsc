@@ -1,4 +1,4 @@
-module Serie1
+module Serie1::Serie1
 
 import IO;
 import lang::java::m3::Core;
@@ -19,7 +19,6 @@ import UnitInterfacing;
 
 
 public list[loc] allFiles(loc project) {
-	//return [f | /file(f) := getProject(project), f.extension == "java", /^.*\/hsqldb\/(src|integration)\/.*/ := f.path];
 	return [f | /file(f) := getProject(project), f.extension == "java"];
 }
 
@@ -28,13 +27,10 @@ public void runOnSe1(){
 }
 
 public void runModelOnRegressionSet(){
-	set[Declaration] astTest = createAstsFromEclipseProject(|project://regression-set|, true);
-	//M3 modelTest = createM3FromEclipseProject(|project://regression-set|);
-	calcSigModel(modelTest, astTest);
+	run(|project://regression-set|);
 }
 
 public void runSmallSql(){
-	//M3 model = createM3FromEclipseProject(|project://smallsql0.21_src|);
 	run(|project://smallsql0.21_src|);
 }
 
@@ -43,7 +39,6 @@ public void runHsqlDb() {
 }
 
 public void run(loc project){
-	//M3 model = createM3FromEclipseProject(project);
 	set[Declaration] ast = createAstsFromEclipseProject(project, true);
 	calcSigModel(allFiles(project), ast);
 }
@@ -66,6 +61,7 @@ public void calcSigModel(list[loc] files, set[Declaration] ast){
 	complexityResult = systemComplexityRanking(toReal(linesOfCodeMethods), relativeComplexity(methods));
 	println("Comlexity: <complexityResult>");
 	println();
+	
 	//Unit size
 	println("Unit size:");
 	unitSizeResult = systemComplexityRanking(toReal(linesOfCodeMethods), relativeUnitSize(methods));
