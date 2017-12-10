@@ -15,31 +15,40 @@ import util::Resources;
 
 // Visit all nodes and add it to a Map
 // Need to tweak cases
-public void findType2Duplicates(set[Declaration] ast, map[value, set[loc]] duplicates, set[value] coveredChildNodes) {
-    bottom-up visit (ast) {
-        case Statement s: 
-	        addNode(s, s.src, duplicates, coveredChildNodes);	
+public map[value, set[loc]] findType2Duplicates(set[Declaration] ast) {
+	map[value, set[loc]] duplicates = ();
+	set[value] coveredChildNodes = {};
+	
+
+	bottom-up visit (ast) {
+        case Statement s: {
+	        duplicates = addNode(s, s.src, duplicates, coveredChildNodes);	
+	    }
 	    case Declaration d:
-	    		addNode(d, d.src, duplicates, coveredChildNodes);
+	    		duplicates = addNode(d, d.src, duplicates, coveredChildNodes);
 	    //case Expression e:
 	    //	addNode(e, e.src);
 	    //case node n:
 	    //	addNode(n, n.src);
     }
+   	duplicates = domainX(duplicates, coveredChildNodes);
+    return duplicates;
 }
 
-void addNode(node n, loc src, map[value, set[loc]] duplicates, set[value] coveredChildNodes) {
+
+
+map[value, set[loc]] addNode(node n, loc src, map[value, set[loc]] duplicates, set[value] coveredChildNodes) {
 	if(isValidNode(n, src)){
 		n = unsetRec(n);
 		n = cleanNodeForType2(n);
 		if(n in duplicates) {
 			duplicates[n] += {src}; 	
-	   		removeChilderen(n, duplicates);// We dont need the childeren if the parent is in duplicates
+	   		//removeChilderen(n, duplicates, coveredChildNodes); // We dont need the childeren if the parent is in duplicates
 		} else {
 	    		duplicates[n] = {src};
 		}
 	}
-
+	return duplicates;
 }
 
 void removeChilderen(node parent,map[value, set[loc]] duplicates, set[value] coveredChildNodes){
