@@ -13,6 +13,48 @@ import Node;
 import util::Math;
 import util::Resources;
 
+
+
+// Code for appending consecutive sequences of blocks
+public void findConsecutiveSequenceBlocks(map[node, set[loc]] duplicates, set[Declaration] ast){
+	bool previousBlockIsDuplicate = false;
+	map[node, set[loc]] previousDuplicateBlock;
+	for(d <- duplicates) {
+		if(size(duplicates[d]) == 1){
+			children = getChildren(d);
+			bottom-up visit(childeren){
+				case node n: if(n in duplicates){
+					locs = duplicates[n];
+					if(size(locs) > 1){
+						//Found block
+						if(previousBlockIsDuplicate){
+							//TODO found two blocks that are consecutive sequence. Add them together??
+							println();
+						}
+						previousBlockIsDuplicate = true;
+					}else{
+						previousBlockIsDuplicate = false;
+					}
+				}
+			}
+		}
+		//index += 1;
+	}
+}
+
+//public void lol(node parent, map[value, set[loc]] duplicates){
+//	set[loc] sameBlock = {};
+//	int previous = 0;
+//	childeren = getChildren((parent));
+//	bottom-up visit(childeren){
+//		case node n: if(n in duplicates){
+//			//if(!(n in coveredChildNodes)){
+//				println("lol <duplicates[n]>");
+//			//}
+//		}
+//	}
+//}
+
 // Visit all nodes and add it to a Map
 // Need to tweak cases
 public map[value, set[loc]] findType2Duplicates(set[Declaration] ast) {
@@ -27,7 +69,7 @@ public map[value, set[loc]] findType2Duplicates(set[Declaration] ast) {
 	        coveredChildNodes += result[1];	
 	    }
 	    case Declaration d: {
-	    		tuple[map[value, set[loc]], set[value]] result = addNode(d, d.src, duplicates, coveredChildNodes);
+	    	tuple[map[value, set[loc]], set[value]] result = addNode(d, d.src, duplicates, coveredChildNodes);
 	        duplicates = result[0];
 	        coveredChildNodes += result[1];
 	    }
@@ -37,6 +79,7 @@ public map[value, set[loc]] findType2Duplicates(set[Declaration] ast) {
 	    //	addNode(n, n.src);
     }
    	duplicates = domainX(duplicates, coveredChildNodes);
+   	findConsecutiveSequenceBlocks(duplicates, ast);
     return duplicates;
 }
 
@@ -51,7 +94,8 @@ tuple[map[value, set[loc]], set[value]] addNode(node n, loc src, map[value, set[
 			duplicates[n] += {src}; 	
 	   		childDuplicates += getDuplicateChildren(n, duplicates); // We dont need the childeren if the parent is in duplicates
 		} else {
-	    		duplicates[n] = {src};
+			//lol(n, duplicates, childDuplicates);
+    		duplicates[n] = {src};
 		}
 	}
 	return <duplicates, childDuplicates>;
