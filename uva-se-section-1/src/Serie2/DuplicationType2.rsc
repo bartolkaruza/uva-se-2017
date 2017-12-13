@@ -22,7 +22,7 @@ public void findConsecutiveSequenceBlocks(map[node, set[loc]] duplicates, set[De
 	for(d <- duplicates) {
 		if(size(duplicates[d]) == 1){
 			children = getChildren(d);
-			bottom-up visit(childeren){
+			bottom-up visit(children){
 				case node n: if(n in duplicates){
 					locs = duplicates[n];
 					if(size(locs) > 1){
