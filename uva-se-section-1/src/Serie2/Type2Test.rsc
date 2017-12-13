@@ -11,25 +11,38 @@ import lang::java::m3::TypeHierarchy;
 
 import Serie2::DuplicationType2;
 
-public test bool shouldFind2Classes() {
-	set[Declaration] ast = createAstsFromEclipseProject(|project://SystemUnderTest|, true);
+map[value, set[loc]] findDuplicatesForClass(str className) {
 	map[value, set[loc]] duplicates = ();
+	set[Declaration] ast = createAstsFromEclipseProject(|project://SystemUnderTest|, true);
 	visit (ast) {
-		case C:class(n:"Clones", _, _, decl): {
+		case C:class(className, _, _, decl): {
 			duplicates = findType2Duplicates(toSet(decl));
 		}
 	}
-	for(d <- duplicates) {
-		if(size(duplicates[d]) > 1){
-			println(duplicates[d]);
-			println();
+	//for(d <- duplicates) {
+	//	if(size(duplicates[d]) > 1){
+	//		println(duplicates[d]);
+	//		println();
+	//	}
+	//}
+	return duplicates;
+}
+
+public test bool shouldFind2Classes() {
+	map[value, set[loc]] duplicates = findDuplicatesForClass("Clones");
+	return false;
+}
+
+test bool shouldFindWithinMethod() {
+	map[value, set[loc]] nodes = findDuplicatesForClass("ShouldFindWithinMethod");
+	println(size(nodes));
+	int duplicateClasses = 0;
+	for(d <- nodes) {
+		if(size(nodes[d]) > 1) {
+			duplicateClasses += 1;
 		}
 	}
-	//println(ast);
-	//set[Declaration] classAst = {<C> | /C:class(str n, _, _, set[Declaration] cast, _) <- ast};
-	
-	//println(classAst);
-	return false;
+	return duplicateClasses == 1;
 }
 
 test bool cleanNodeForType2Method() {
