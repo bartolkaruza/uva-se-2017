@@ -1,6 +1,6 @@
 public class ShouldFindSingleClass {
 	
-	public ShouldFindSingleClass() {
+	public void ShouldFindSingleClass() {
 		int x = 0;
 		int y = 5;
 		int z = 3;

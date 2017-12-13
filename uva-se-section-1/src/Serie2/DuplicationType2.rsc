@@ -22,6 +22,7 @@ public void findConsecutiveSequenceBlocks(map[node, set[loc]] duplicates, set[De
 	for(d <- duplicates) {
 		if(size(duplicates[d]) == 1){
 			children = getChildren(d);
+			
 			bottom-up visit(children){
 				case node n: if(n in duplicates){
 					locs = duplicates[n];
@@ -42,6 +43,26 @@ public void findConsecutiveSequenceBlocks(map[node, set[loc]] duplicates, set[De
 	}
 }
 
+public map[node, set[loc]] iterateSublists(map[node, set[loc]] duplicates, list[value] children) {
+		int x = 0;
+		int a = 1;
+		do {
+			while(size(children) >= x + a) {
+				node n = makeNode("ARGH", slice(children, x, x + a));
+				if(n in duplicates) {
+					println(n);	
+				} else {
+					duplicates[n] += {n.src}; 
+				}
+				a += 1;
+			}
+			a = 1;
+			x += 1;
+		} while(size(children) < x);
+		
+		return duplicates;
+}
+
 //public void lol(node parent, map[value, set[loc]] duplicates){
 //	set[loc] sameBlock = {};
 //	int previous = 0;
@@ -57,19 +78,19 @@ public void findConsecutiveSequenceBlocks(map[node, set[loc]] duplicates, set[De
 
 // Visit all nodes and add it to a Map
 // Need to tweak cases
-public map[value, set[loc]] findType2Duplicates(set[Declaration] ast) {
-	map[value, set[loc]] duplicates = ();
-	set[value] coveredChildNodes = {};
+public map[node, set[loc]] findType2Duplicates(set[Declaration] ast) {
+	map[node, set[loc]] duplicates = ();
+	set[node] coveredChildNodes = {};
 	
 
 	bottom-up visit (ast) {
         case Statement s: {
-	        tuple[map[value, set[loc]], set[value]] result = addNode(s, s.src, duplicates, coveredChildNodes);
+	        tuple[map[node, set[loc]], set[node]] result = addNode(s, s.src, duplicates, coveredChildNodes);
 	        duplicates = result[0];
 	        coveredChildNodes += result[1];	
 	    }
 	    case Declaration d: {
-	    	tuple[map[value, set[loc]], set[value]] result = addNode(d, d.src, duplicates, coveredChildNodes);
+	    	tuple[map[node, set[loc]], set[node]] result = addNode(d, d.src, duplicates, coveredChildNodes);
 	        duplicates = result[0];
 	        coveredChildNodes += result[1];
 	    }
@@ -85,8 +106,8 @@ public map[value, set[loc]] findType2Duplicates(set[Declaration] ast) {
 
 
 
-tuple[map[value, set[loc]], set[value]] addNode(node n, loc src, map[value, set[loc]] duplicates, set[value] coveredChildNodes) {
-	set[value] childDuplicates = {};
+tuple[map[node, set[loc]], set[node]] addNode(node n, loc src, map[node, set[loc]] duplicates, set[node] coveredChildNodes) {
+	set[node] childDuplicates = {};
 	if(isValidNode(n, src)){
 		n = unsetRec(n);
 		n = cleanNodeForType2(n);
@@ -101,9 +122,9 @@ tuple[map[value, set[loc]], set[value]] addNode(node n, loc src, map[value, set[
 	return <duplicates, childDuplicates>;
 }
 
-set[value] getDuplicateChildren(node parent, map[value, set[loc]] duplicates) {
+set[node] getDuplicateChildren(node parent, map[node, set[loc]] duplicates) {
 	//Revisiting is needed because of a bug
-	set[value] coveredChildNodes = {};
+	set[node] coveredChildNodes = {};
     bottom-up visit (getChildren(parent)) {
         case node n:if(n in duplicates) {
         		if(size(duplicates[n]) == size(duplicates[parent])){// BY REMOVING THIS STATEMENT YOU GET EXACT COPIES

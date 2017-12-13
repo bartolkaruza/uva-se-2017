@@ -6,6 +6,7 @@ import List;
 import Set;
 import Relation;
 import Map;
+import Node;
 import lang::java::jdt::m3::AST;
 import lang::java::m3::TypeHierarchy;
 
@@ -13,6 +14,20 @@ import Serie2::DuplicationType2;
 
 public test bool shouldFind2Classes() {
 	return countDuplicates(findDuplicatesForClass("Clones")) == 3;
+}
+
+test bool shouldIterateSublists() {
+	map[node, set[loc]] nodes = ();
+	nodes = iterateSublists(nodes, getChildren(getOneFrom(getBlockFromMethod("ShouldFindSingleClass"))));
+	
+	//println(nodes);
+	
+	//println(size(nodes));;
+	for(n <- nodes) {
+		println(getOneFrom(nodes[n]));
+	}
+	////println(iterateSublists(nodes, getChildren(getOneFrom(nodes))));
+	return false;
 }
 
 test bool shouldFindSingleClassOnMultiline() {
@@ -43,8 +58,8 @@ test bool cleanNodeForType2VariableWithExpression() {
 
 
 
-map[value, set[loc]] findDuplicatesForClass(str className) {
-	map[value, set[loc]] duplicates = ();
+map[node, set[loc]] findDuplicatesForClass(str className) {
+	map[node, set[loc]] duplicates = ();
 	set[Declaration] ast = createAstsFromEclipseProject(|project://SystemUnderTest|, true);
 	visit (ast) {
 		case C:class(className, _, _, decl): {
@@ -58,6 +73,16 @@ map[value, set[loc]] findDuplicatesForClass(str className) {
 		}
 	}
 	return duplicates;
+}
+
+list[node] getBlockFromMethod(str methodName) {
+	set[Declaration] ast = createAstsFromEclipseProject(|project://SystemUnderTest|, true);
+	list[node] foundBlock = [];
+	top-down-break visit (ast) {
+		case M:method(_, methodName, _, _, block): foundBlock += block;
+	}
+	return foundBlock;
+	
 }
 
 int countDuplicates(map[value, set[loc]] nodes) {

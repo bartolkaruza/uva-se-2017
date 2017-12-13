@@ -31,7 +31,7 @@ public map[value, set[loc]] runSerie2(){
     //duplicates = (d : duplicates[d] | d <- duplicates, size(duplicates[d]) > 1, !d in coverdChildNodes);
     
 	for(d <- duplicates) {
-		if(size(duplicates[d]) > 1){
+		if(size(duplicates[d]) > 1) {
 			println(duplicates[d]);
 			println();
 		}
