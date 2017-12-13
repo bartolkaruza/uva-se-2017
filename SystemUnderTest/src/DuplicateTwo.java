@@ -76,13 +76,6 @@ public class DuplicateTwo {
 	public void infixAnd() {
 		boolean result = testValue && false;
 		System.out.println("infix and" + result);
-		
-		
-		if(true) {
-			result = testValue && false;
-			System.out.println("infix and" + result);
-		}
-		
 	}
 	
 	public void infixOr() {
