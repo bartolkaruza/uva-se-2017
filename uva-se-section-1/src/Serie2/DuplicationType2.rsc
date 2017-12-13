@@ -79,7 +79,7 @@ public map[value, set[loc]] findType2Duplicates(set[Declaration] ast) {
 	    //	addNode(n, n.src);
     }
    	duplicates = domainX(duplicates, coveredChildNodes);
-   	findConsecutiveSequenceBlocks(duplicates, ast);
+   	//findConsecutiveSequenceBlocks(duplicates, ast);
     return duplicates;
 }
 
@@ -132,15 +132,13 @@ node cleanNodeForType2(node n) {
 bool isValidNode(node n, loc src) {
 	if(src.scheme == "unknown") {
 		return false;
-	} else if(src.begin.line == src.end.line) { // Single line code count as duplicate???
-		return false;
 	}	
 
 	switch(n){
 		case \import(_): return false;
 		case \package(_): return false;
 		case \package(_, _): return false;
-		//case \declarationStatement(_): return false;
+		//case \declarationStatement(_):	 return false;
 		case \break(): return false;
     		case \break(_): return false;
     		case \parameter(_,_,_): return false;

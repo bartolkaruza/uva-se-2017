@@ -1,6 +1,6 @@
-public class ShouldFindWithinMethod {
+public class ShouldFindSingleClass {
 	
-	public ShouldFindWithinMethod() {
+	public ShouldFindSingleClass() {
 		int x = 0;
 		int y = 5;
 		int z = 3;

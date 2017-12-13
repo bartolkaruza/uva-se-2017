@@ -11,38 +11,12 @@ import lang::java::m3::TypeHierarchy;
 
 import Serie2::DuplicationType2;
 
-map[value, set[loc]] findDuplicatesForClass(str className) {
-	map[value, set[loc]] duplicates = ();
-	set[Declaration] ast = createAstsFromEclipseProject(|project://SystemUnderTest|, true);
-	visit (ast) {
-		case C:class(className, _, _, decl): {
-			duplicates = findType2Duplicates(toSet(decl));
-		}
-	}
-	//for(d <- duplicates) {
-	//	if(size(duplicates[d]) > 1){
-	//		println(duplicates[d]);
-	//		println();
-	//	}
-	//}
-	return duplicates;
-}
-
 public test bool shouldFind2Classes() {
-	map[value, set[loc]] duplicates = findDuplicatesForClass("Clones");
-	return false;
+	return countDuplicates(findDuplicatesForClass("Clones")) == 3;
 }
 
-test bool shouldFindWithinMethod() {
-	map[value, set[loc]] nodes = findDuplicatesForClass("ShouldFindWithinMethod");
-	println(size(nodes));
-	int duplicateClasses = 0;
-	for(d <- nodes) {
-		if(size(nodes[d]) > 1) {
-			duplicateClasses += 1;
-		}
-	}
-	return duplicateClasses == 1;
+test bool shouldFindSingleClassOnMultiline() {
+	return countDuplicates(findDuplicatesForClass("ShouldFindSingleClass")) == 1;
 }
 
 test bool cleanNodeForType2Method() {
@@ -65,4 +39,33 @@ test bool cleanNodeForType2Variable() {
 
 test bool cleanNodeForType2VariableWithExpression() {
 	return cleanNodeForType2(variable("name", 3, \null)) == variable("", 3, \null);
+}
+
+
+
+map[value, set[loc]] findDuplicatesForClass(str className) {
+	map[value, set[loc]] duplicates = ();
+	set[Declaration] ast = createAstsFromEclipseProject(|project://SystemUnderTest|, true);
+	visit (ast) {
+		case C:class(className, _, _, decl): {
+			duplicates = findType2Duplicates(toSet(decl));
+		}
+	}
+	for(d <- duplicates) {
+		if(size(duplicates[d]) > 1) {
+			println(duplicates[d]);
+			println();
+		}
+	}
+	return duplicates;
+}
+
+int countDuplicates(map[value, set[loc]] nodes) {
+	int duplicateClasses = 0;
+	for(d <- nodes) {
+		if(size(nodes[d]) > 1) {
+			duplicateClasses += 1;
+		}
+	}
+	return duplicateClasses;
 }
