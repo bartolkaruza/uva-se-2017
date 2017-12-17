@@ -45,5 +45,5 @@ test bool cleanNodeForType2Variable() {
 }
 
 test bool cleanNodeForType2VariableWithExpression() {
-	return cleanNodeForType2(variable("name", 3, \null)) == variable("", 3, \null);
+	return cleanNodeForType2(variable("name", 3, \null())) == variable("", 3, \null());
 }
