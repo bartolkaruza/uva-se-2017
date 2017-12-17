@@ -10,4 +10,8 @@ test bool shouldCountClonesCorrectly() {
 
 test bool shouldCalculatePercentageCorrectly() {
 	return percantageOfDuplicatedLines(|project://SystemUnderTest/src/Percentage.java|, findDuplicatesForClass("Percentage")) == 35.2941176500;
-} 
+}
+
+test bool shouldCountCloneClasses() {
+	return cloneClasses(findDuplicatesForClass("CloneClasses")) == 2;
+}

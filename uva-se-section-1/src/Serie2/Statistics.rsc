@@ -1,11 +1,19 @@
 module Serie2::Statistics
 import Set;
+import Map;
 import Serie1::Serie1;
 import Serie1::LinesOfCode;
-import IO;
 
 public real percantageOfDuplicatedLines(loc location, map[value, set[loc]] duplicates) {
 	return duplicatedLines(duplicates) / locationLoc(location) * 100;
+}
+
+public int numberOfClones(map[value, set[loc]] duplicates) {
+	return size(union({duplicates[d] | d <- duplicates}));
+}
+
+public int cloneClasses(map[value, set[loc]] duplicates) {
+	return size(duplicates);	
 }
 
 real duplicatedLines(map[value, set[loc]] duplicates) {
@@ -24,8 +32,3 @@ real duplicatedLines(map[value, set[loc]] duplicates) {
 	}
 	return lines;
 }
-
-public int numberOfClones(map[value, set[loc]] duplicates) {
-	return size(union({duplicates[d] | d <- duplicates}));
-}
-
