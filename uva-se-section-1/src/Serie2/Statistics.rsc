@@ -3,9 +3,33 @@ import Set;
 import Map;
 import Serie1::Serie1;
 import Serie1::LinesOfCode;
+import IO;
 
-public real percantageOfDuplicatedLines(loc location, map[value, set[loc]] duplicates) {
-	return duplicatedLines(duplicates) / locationLoc(location) * 100;
+public void printStatistics(loc project, map[value, set[loc]] duplicates) {
+	println("***************************************");
+	println("Statistics");
+	println();
+	println("% cloned:	<percantageOfDuplicatedLines(project, duplicates)>");
+	println("# of clones:	<numberOfClones(duplicates)>");
+	println("# of classes:	<cloneClasses(duplicates)>");
+	println();
+	println("biggest clone:");
+	println(	biggestClone(duplicates));
+	println();
+	println("biggest class:");
+	println(biggestCloneClass(duplicates));
+	println();
+	println("example clone:");
+	println(exampleClone(duplicates));
+	println("***************************************");
+}
+
+public real percantageOfDuplicatedLines(loc project, map[value, set[loc]] duplicates) {
+	return percantageOfDuplicatedLines(classesLoc(allFiles(project)), duplicates);
+}
+
+public real percantageOfDuplicatedLines(int totalLines, map[value, set[loc]] duplicates) {
+	return duplicatedLines(duplicates) / totalLines * 100;
 }
 
 public int numberOfClones(map[value, set[loc]] duplicates) {
@@ -43,8 +67,8 @@ public set[loc] biggestCloneClass(map[value, set[loc]] duplicates) {
 	return largest;
 }
 
-public set[loc] exampleClone(map[value, set[loc]] duplicates) {
-	return getOneFrom({duplicates[d] | d <- duplicates});
+public loc exampleClone(map[value, set[loc]] duplicates) {
+	return getOneFrom({getOneFrom(duplicates[d]) | d <- duplicates});
 }
 
 real duplicatedLines(map[value, set[loc]] duplicates) {

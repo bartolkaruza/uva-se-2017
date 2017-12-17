@@ -9,7 +9,7 @@ test bool shouldCountClonesCorrectly() {
 }
 
 test bool shouldCalculatePercentageCorrectly() {
-	return percantageOfDuplicatedLines(|project://SystemUnderTest/src/Percentage.java|, findDuplicatesForClass("Percentage")) == 35.2941176500;
+	return percantageOfDuplicatedLines(17, findDuplicatesForClass("Percentage")) == 35.2941176500;
 }
 
 test bool shouldCountCloneClasses() {
@@ -25,5 +25,5 @@ test bool shouldFindBiggestCloneClass() {
 }
 
 test bool shouldGetExampleClone() {
-	return exampleClone(findDuplicatesForClass("CloneExample")) == {|project://SystemUnderTest/src/CloneExample.java|(29,113,<2,1>,<6,2>),|project://SystemUnderTest/src/CloneExample.java|(146,113,<8,1>,<12,2>)};
+	return exampleClone(findDuplicatesForClass("CloneExample")) == |project://SystemUnderTest/src/CloneExample.java|(146,113,<8,1>,<12,2>);
 }

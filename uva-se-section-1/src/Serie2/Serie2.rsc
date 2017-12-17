@@ -14,27 +14,32 @@ import util::Resources;
 import Node;
 
 import Serie2::DuplicationType2;
+import Serie2::Statistics;
 
 public map[value, set[loc]] runSerie2(){
 	
 	println("Building ast");
 	
-	//set[Declaration] ast = createAstsFromEclipseProject(|project://SystemUnderTest|, true);
+	set[Declaration] ast = createAstsFromEclipseProject(|project://SystemUnderTest|, true);
 	//set[Declaration] ast = createAstsFromEclipseProject(|project://smallsql0.21_src|, true);
-	set[Declaration] ast = createAstsFromEclipseProject(|project://hsqldb-2.3.1|, true);
+	//set[Declaration] ast = createAstsFromEclipseProject(|project://hsqldb-2.3.1|, true);
 	
 	println("search duplicates");
 	
 	map[value, set[loc]] duplicates = findType2Duplicates(ast);
 	
+	printStatistics(|project://SystemUnderTest|, duplicates);
+	
 	println("Found all duplicates");
     //duplicates = (d : duplicates[d] | d <- duplicates, size(duplicates[d]) > 1, !d in coverdChildNodes);
     
-	for(d <- duplicates) {
-		if(size(duplicates[d]) > 1) {
-			println(duplicates[d]);
-			println();
-		}
-	}
+    
+    
+	//for(d <- duplicates) {
+	//	if(size(duplicates[d]) > 1) {
+	//		println(duplicates[d]);
+	//		println();
+	//	}
+	//}
     return ();
 }
