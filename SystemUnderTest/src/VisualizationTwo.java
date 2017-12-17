@@ -17,8 +17,8 @@ public class VisualizationTwo {
 	}
 	
 	public void occurrenceOfDifferentKind() {
-		int x = 0;
-		int y = 2;
+		int x = 10;
+		int y = 15;
 		System.out.println("different");
 	}
 }
