@@ -18,20 +18,6 @@ public test bool shouldFind2Classes() {
 	return countDuplicates(findDuplicatesForClass("Clones")) == 3;
 }
 
-test bool shouldIterateSublists() {
-	map[node, set[loc]] nodes = ();
-	nodes = iterateSublists(nodes, getChildren(getOneFrom(getBlockFromMethod("ShouldFindSingleClass"))));
-	
-	//println(nodes);
-	
-	//println(size(nodes));;
-	for(n <- nodes) {
-		println(getOneFrom(nodes[n]));
-	}
-	////println(iterateSublists(nodes, getChildren(getOneFrom(nodes))));
-	return false;
-}
-
 test bool shouldFindType2Classes() {
 	return countDuplicates(findDuplicatesForClass("Type2Clones")) == 1;
 }
@@ -41,11 +27,11 @@ test bool shouldFindSingleClassOnMultiline() {
 }
 
 test bool cleanNodeForType2Method() {
-	return cleanNodeForType2(method(\void(), "name", [], [])) == method(\void(), "", [], []);
+	return cleanNodeForType2(method(\void(), "name", [], [])) == method(\wildcard(), "", [], []);
 }
 
 test bool cleanNodeForType2MethodWithStatement() {
-	return cleanNodeForType2(method(\void(), "name", [], [], \block([]))) == method(\void(), "", [], [], \block([]));
+	return cleanNodeForType2(method(\void(), "name", [], [], \block([]))) == method(\wildcard(), "", [], [], \block([]));
 }
 
 test bool cleanNodeForType2SimpleName() {
