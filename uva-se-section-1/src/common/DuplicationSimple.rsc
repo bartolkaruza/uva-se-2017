@@ -7,7 +7,7 @@ import Set;
 import String;
 import lang::java::jdt::m3::Core;
 import lang::java::jdt::m3::AST;
-import LinesOfCode;
+import Serie1::LinesOfCode;
 import util::Math;
 
 tuple[bool, int, set[str]] checkBlock(str block, bool previousMatch, set[str] blocks) {
