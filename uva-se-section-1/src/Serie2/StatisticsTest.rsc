@@ -23,3 +23,7 @@ test bool shouldFindBiggestClone() {
 test bool shouldFindBiggestCloneClass() {
 	return biggestCloneClass(findDuplicatesForClass("CloneSizes")) == {|project://SystemUnderTest/src/CloneSizes.java|(890,116,<43,1>,<47,2>),|project://SystemUnderTest/src/CloneSizes.java|(650,115,<31,1>,<35,2>),|project://SystemUnderTest/src/CloneSizes.java|(769,117,<37,1>,<41,2>),|project://SystemUnderTest/src/CloneSizes.java|(531,115,<25,1>,<29,2>)};
 }
+
+test bool shouldGetExampleClone() {
+	return exampleClone(findDuplicatesForClass("CloneExample")) == {|project://SystemUnderTest/src/CloneExample.java|(29,113,<2,1>,<6,2>),|project://SystemUnderTest/src/CloneExample.java|(146,113,<8,1>,<12,2>)};
+}

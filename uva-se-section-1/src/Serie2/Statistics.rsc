@@ -43,6 +43,10 @@ public set[loc] biggestCloneClass(map[value, set[loc]] duplicates) {
 	return largest;
 }
 
+public set[loc] exampleClone(map[value, set[loc]] duplicates) {
+	return getOneFrom({duplicates[d] | d <- duplicates});
+}
+
 real duplicatedLines(map[value, set[loc]] duplicates) {
 	dupSet = union({duplicates[d] | d <- duplicates});
 	real lines = 0.0;
