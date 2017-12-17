@@ -69,7 +69,8 @@ public map[node, set[loc]] findConsecutiveSequenceBlocks(map[node, set[loc]] dup
 	
 	println("Merge duplicates and blocks");
 	// Add duplicates that are not blocks, so we have a full set of duplicates;
-	duplicatesWithBlocks = blocksWithLoc + (d: duplicates[d] |d <- duplicates, size(duplicates[d]) > 1, !any(n <- blocksWithLoc, d in getChildren(n)));	
+	duplicatesWithBlocks = blocksWithLoc + (d: duplicates[d] |d <- duplicates, size(duplicates[d]) > 1, !any(n <- blocksWithLoc, d in getChildren(n)));
+	duplicatesWithBlocks = (d: duplicates[d] | d <- duplicates, size(duplicates[d]) > 1);	
 	
 	return duplicatesWithBlocks;
 }

@@ -15,6 +15,8 @@ import Node;
 
 import Serie2::DuplicationType2;
 import Serie2::Statistics;
+import Serie2::Visualization;
+import Serie2::Serialize;
 
 public map[value, set[loc]] runSerie2(){
 	
@@ -28,7 +30,11 @@ public map[value, set[loc]] runSerie2(){
 	
 	map[value, set[loc]] duplicates = findType2Duplicates(ast);
 	
+	writeDuplicatesToDisk(duplicates);
+	
 	printStatistics(|project://SystemUnderTest|, duplicates);
+	
+	makeHasseDiagram(duplicates);
 	
 	println("Found all duplicates");
     //duplicates = (d : duplicates[d] | d <- duplicates, size(duplicates[d]) > 1, !d in coverdChildNodes);
