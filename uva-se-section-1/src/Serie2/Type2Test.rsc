@@ -30,6 +30,10 @@ test bool shouldIterateSublists() {
 	return false;
 }
 
+test bool shouldFindType2Classes() {
+	return countDuplicates(findDuplicatesForClass("Type2Clones")) == 1;
+}
+
 test bool shouldFindSingleClassOnMultiline() {
 	return countDuplicates(findDuplicatesForClass("ShouldFindSingleClass")) == 1;
 }

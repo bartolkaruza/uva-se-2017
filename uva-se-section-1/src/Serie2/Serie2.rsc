@@ -19,9 +19,9 @@ public map[value, set[loc]] runSerie2(){
 	
 	println("Building ast");
 	
-	set[Declaration] ast = createAstsFromEclipseProject(|project://SystemUnderTest|, true);
+	//set[Declaration] ast = createAstsFromEclipseProject(|project://SystemUnderTest|, true);
 	//set[Declaration] ast = createAstsFromEclipseProject(|project://smallsql0.21_src|, true);
-	//set[Declaration] ast = createAstsFromEclipseProject(|project://hsqldb-2.3.1|, true);
+	set[Declaration] ast = createAstsFromEclipseProject(|project://hsqldb-2.3.1|, true);
 	
 	println("search duplicates");
 	
