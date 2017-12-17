@@ -12,69 +12,7 @@ import String;
 import Node;
 import util::Math;
 import util::Resources;
-
-
-
-// Code for appending consecutive sequences of blocks
-public void findConsecutiveSequenceBlocks(map[node, set[loc]] duplicates, set[Declaration] ast){
-	bool previousBlockIsDuplicate = false;
-	map[node, set[loc]] previousDuplicateBlock;
-	for(d <- duplicates) {
-		if(size(duplicates[d]) == 1){
-			children = getChildren(d);
-			
-			bottom-up visit(children){
-				case node n: if(n in duplicates){
-					locs = duplicates[n];
-					if(size(locs) > 1){
-						//Found block
-						if(previousBlockIsDuplicate){
-							//TODO found two blocks that are consecutive sequence. Add them together??
-							println();
-						}
-						previousBlockIsDuplicate = true;
-					}else{
-						previousBlockIsDuplicate = false;
-					}
-				}
-			}
-		}
-		//index += 1;
-	}
-}
-
-public map[node, set[loc]] iterateSublists(map[node, set[loc]] duplicates, list[value] children) {
-		int x = 0;
-		int a = 1;
-		do {
-			while(size(children) >= x + a) {
-				node n = makeNode("ARGH", slice(children, x, x + a));
-				if(n in duplicates) {
-					println(n);	
-				} else {
-					duplicates[n] += {n.src}; 
-				}
-				a += 1;
-			}
-			a = 1;
-			x += 1;
-		} while(size(children) < x);
-		
-		return duplicates;
-}
-
-//public void lol(node parent, map[value, set[loc]] duplicates){
-//	set[loc] sameBlock = {};
-//	int previous = 0;
-//	childeren = getChildren((parent));
-//	bottom-up visit(childeren){
-//		case node n: if(n in duplicates){
-//			//if(!(n in coveredChildNodes)){
-//				println("lol <duplicates[n]>");
-//			//}
-//		}
-//	}
-//}
+import Type;
 
 // Visit all nodes and add it to a Map
 // Need to tweak cases
@@ -99,12 +37,69 @@ public map[node, set[loc]] findType2Duplicates(set[Declaration] ast) {
 	    //case node n:
 	    //	addNode(n, n.src);
     }
+    
    	duplicates = domainX(duplicates, coveredChildNodes);
-   	//findConsecutiveSequenceBlocks(duplicates, ast);
+   	
+   	duplicates = findConsecutiveSequenceBlocks(duplicates, ast);
+   	
     return duplicates;
 }
 
+// Code for appending consecutive sequences of blocks
+public map[node, set[loc]] findConsecutiveSequenceBlocks(map[node, set[loc]] duplicates, set[Declaration] ast){
+	map[node, int] blocks = ();
+	
+	// Generate all blocks 
+	// {1,2,3} {1,2} {3} gives {3}, {1,2}, {2}
+	for(d <- duplicates) {
+		if(size(duplicates[d]) == 1){
+			blocks = createBlocks(duplicates, getNestedChildren(d), blocks);
+		}
+	}
+	
+	// The blocks are generated for all children even non duplicate. So this filters out all blocks where all of the children are duplicates
+	blocks = (n : blocks[n] | n <- blocks, blocks[n] > 1, all(c <- getChildren(n), c in duplicates));
+	
+	// Remove all blocks that are covered by another block {3}, {1,2}, {2} gives {3}, {1,2}. Ugly subsumption
+	blocks = blocks - (n : blocks[n] | n <- blocks, any(q <- blocks, (n != q && getChildren(n) < getChildren(q) && blocks[n] == blocks[q])));
+	
+	// Add locs for all blocs
+	blocksWithLoc = (n : union({duplicates[c]| c <- getChildren(n)}) | n <- blocks);
+	
+	// Add duplicates that are not blocks, so we have a full set of duplicates;
+	duplicatesWithBlocks = blocksWithLoc + (d: duplicates[d] |d <- duplicates, size(duplicates[d]) > 1, !any(n <- blocksWithLoc, d in getChildren(n)));	
+	
+	return duplicatesWithBlocks;
+}
 
+public list[value] getNestedChildren(node n){
+	children = getChildren(n);
+	if([[*l]] := children){ 
+		return l;
+	}
+	return children;
+}
+
+public set[loc] mergLocs(set[loc] locs1, set[loc] locs2){
+}
+
+public map[node, int] createBlocks(map[node, set[loc]] duplicates, list[value] children, map[node, int] blocks){
+
+	for(i <- [0..size(children)]){
+		prev = [];
+		
+		for(j <- [i..size(children)]){
+			prev += children[j];
+			node n = makeNode("blockNode", prev);
+			if(n in blocks){
+				blocks[n] += 1;
+			}else{
+				blocks[n] = 1;
+			}			
+		}
+	}
+	return blocks;
+}
 
 tuple[map[node, set[loc]], set[node]] addNode(node n, loc src, map[node, set[loc]] duplicates, set[node] coveredChildNodes) {
 	set[node] childDuplicates = {};
@@ -159,10 +154,9 @@ bool isValidNode(node n, loc src) {
 		case \import(_): return false;
 		case \package(_): return false;
 		case \package(_, _): return false;
-		//case \declarationStatement(_):	 return false;
 		case \break(): return false;
-    		case \break(_): return false;
-    		case \parameter(_,_,_): return false;
+		case \break(_): return false;
+		case \parameter(_,_,_): return false;
 	}
 	return true;
 }
