@@ -20,6 +20,6 @@ public class Visualization {
 	public void occurrenceOfDifferentKind() {
 		int x = 0;
 		int y = 2;
-		int z = y + x;
+		System.out.println("different");
 	}
 }
