@@ -38,7 +38,7 @@ public map[node, set[loc]] findDuplicatesForClass(str className) {
 	set[Declaration] ast = createAstsFromEclipseProject(|project://SystemUnderTest|, true);
 	visit (ast) {
 		case C:class(className, _, _, decl): {
-			duplicates = findType2Duplicates(toSet(decl));
+			duplicates = findType2Duplicates(toSet(decl), Type1);
 		}
 	}
 	for(d <- duplicates) {
