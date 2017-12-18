@@ -25,5 +25,10 @@ test bool shouldFindBiggestCloneClass() {
 }
 
 test bool shouldGetExampleClone() {
-	return exampleClone(findDuplicatesForClass("CloneExample")) == |project://SystemUnderTest/src/CloneExample.java|(146,113,<8,1>,<12,2>);
+	example = exampleClone(findDuplicatesForClass("CloneExample"));
+	println(example);
+	return 
+	example == |project://SystemUnderTest/src/CloneExample.java|(174,85,<8,29>,<12,2>) ||
+	example == |project://SystemUnderTest/src/CloneExample.java|(57,85,<2,29>,<6,2>)
+	;
 }

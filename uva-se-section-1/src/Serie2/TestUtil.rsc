@@ -23,7 +23,7 @@ public map[node, set[loc]] findDuplicatesForClasses(list[str] classNames) {
 			}
 		}
 	}
-	duplicates = findType2Duplicates(toSet(declarations));
+	duplicates = findType2Duplicates(toSet(declarations), Type1);
 	for(d <- duplicates) {
 		if(size(duplicates[d]) > 1) {
 			println(duplicates[d]);
