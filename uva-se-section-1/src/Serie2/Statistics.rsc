@@ -9,17 +9,17 @@ public void printStatistics(loc project, map[value, set[loc]] duplicates, int Ty
 	println("***************************************");
 	println("Statistics for Type <Type>");
 	println();
-	println("% cloned:	<percantageOfDuplicatedLines(project, duplicates)>");
+	//println("% cloned:	<percantageOfDuplicatedLines(project, duplicates)>");
 	println("# of clones:	<numberOfClones(duplicates)>");
 	println("# of classes:	<cloneClasses(duplicates)>");
 	println();
-	println("biggest clone:");
+	println("biggest clone: \<occurences, location\>");
 	println(	biggestClone(duplicates));
 	println();
 	println("biggest class: \<occurences, location\>");
 	println(biggestCloneClass(duplicates));
 	println();
-	println("example clone: \<occurences, location\>");
+	println("example clone:");
 	println(exampleClone(duplicates));
 	println("***************************************");
 }
