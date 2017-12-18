@@ -28,13 +28,17 @@ public map[value, set[loc]] runSerie2(){
 	
 	println("search duplicates");
 	
-	map[value, set[loc]] duplicates = findType2Duplicates(ast);
+	map[value, set[loc]] type2 = findType2Duplicates(ast, Type2);
+	writeDuplicatesToDisk(type2, Type2);
 	
-	writeDuplicatesToDisk(duplicates);
+	map[value, set[loc]] type1 = findType2Duplicates(ast, Type1);
+	writeDuplicatesToDisk(type1, Type2);
 	
-	printStatistics(|project://SystemUnderTest|, duplicates);
+	printStatistics(|project://SystemUnderTest|, type1, Type1);
+	printStatistics(|project://SystemUnderTest|, type2, Type2);
 	
-	makeHasseDiagram(duplicates);
+	makeHasseDiagram(type1, Type1);
+	makeHasseDiagram(type2, Type2);
 	
 	println("Found all duplicates");
     //duplicates = (d : duplicates[d] | d <- duplicates, size(duplicates[d]) > 1, !d in coverdChildNodes);

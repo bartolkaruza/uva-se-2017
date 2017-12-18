@@ -8,7 +8,7 @@ public void makeDotDiagram(map[value, set[loc]] duplicates) {
 	
 }
 
-public void makeHasseDiagram(map[value, set[loc]] duplicates) {
+public void makeHasseDiagram(map[value, set[loc]] duplicates, int Type) {
 	edges = [];
 	nodes = toList({ makeNodeFigure(s) | s <- union({duplicates[d] | d <- duplicates})});
 	for(key <- duplicates) {
@@ -21,7 +21,7 @@ public void makeHasseDiagram(map[value, set[loc]] duplicates) {
 			}
 		}
 	}
-	render(graph(nodes, edges, hint("layered"), gap(20)));
+	render("Type <Type>", graph(nodes, edges, hint("layered"), gap(20)));
 }
 
 Figure makeNodeFigure(loc l) {

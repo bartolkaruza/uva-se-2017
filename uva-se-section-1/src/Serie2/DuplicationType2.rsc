@@ -14,21 +14,24 @@ import util::Math;
 import util::Resources;
 import Type;
 
+public int Type2 = 2;
+public int Type1 = 1;
+
 // Visit all nodes and add it to a Map
 // Need to tweak cases
-public map[node, set[loc]] findType2Duplicates(set[Declaration] ast) {
+public map[node, set[loc]] findType2Duplicates(set[Declaration] ast, int Type) {
 	map[node, set[loc]] duplicates = ();
 	set[node] coveredChildNodes = {};
 	
 
 	bottom-up visit (ast) {
         case Statement s: {
-	        tuple[map[node, set[loc]], set[node]] result = addNode(s, s.src, duplicates, coveredChildNodes);
+	        tuple[map[node, set[loc]], set[node]] result = addNode(s, s.src, duplicates, coveredChildNodes, Type);
 	        duplicates = result[0];
 	        coveredChildNodes += result[1];	
 	    }
 	    case Declaration d: {
-	    	tuple[map[node, set[loc]], set[node]] result = addNode(d, d.src, duplicates, coveredChildNodes);
+	    		tuple[map[node, set[loc]], set[node]] result = addNode(d, d.src, duplicates, coveredChildNodes, Type);
 	        duplicates = result[0];
 	        coveredChildNodes += result[1];
 	    }
@@ -83,7 +86,8 @@ public list[value] getNestedChildren(node n){
 	return children;
 }
 
-public set[loc] mergLocs(set[loc] locs1, set[loc] locs2){
+public set[loc] mergeLocs(set[loc] locs1, set[loc] locs2){
+
 }
 
 public map[list[value], int] createBlocks(map[node, set[loc]] duplicates, list[value] children, map[list[value], int] blocks){
@@ -94,9 +98,9 @@ public map[list[value], int] createBlocks(map[node, set[loc]] duplicates, list[v
 		for(j <- [i..size(children)]){
 			prev += children[j];
 			//node n = makeNode("blockNode", prev);
-			if(prev in blocks){
+			if(prev in blocks) {
 				blocks[prev] += 1;
-			}else{
+			} else{
 				blocks[prev] = 1;
 			}			
 		}
@@ -104,16 +108,18 @@ public map[list[value], int] createBlocks(map[node, set[loc]] duplicates, list[v
 	return blocks;
 }
 
-tuple[map[node, set[loc]], set[node]] addNode(node n, loc src, map[node, set[loc]] duplicates, set[node] coveredChildNodes) {
+tuple[map[node, set[loc]], set[node]] addNode(node n, loc src, map[node, set[loc]] duplicates, set[node] coveredChildNodes, int Type) {
 	set[node] childDuplicates = {};
 	n = unsetRec(n);
-	n = cleanNodeForType2(n);
+	if(Type == Type2) {
+		n = cleanNodeForType2(n);
+	}
 	if(isValidNode(n, src)){
 		if(n in duplicates) {
 			duplicates[n] += {src}; 	
 	   		childDuplicates += getDuplicateChildren(n, duplicates); // We dont need the childeren if the parent is in duplicates
 		} else {
-    		duplicates[n] = {src};
+    			duplicates[n] = {src};
 		}
 	}
 	return <duplicates, childDuplicates>;

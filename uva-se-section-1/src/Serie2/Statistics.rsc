@@ -5,9 +5,9 @@ import Serie1::Serie1;
 import Serie1::LinesOfCode;
 import IO;
 
-public void printStatistics(loc project, map[value, set[loc]] duplicates) {
+public void printStatistics(loc project, map[value, set[loc]] duplicates, int Type) {
 	println("***************************************");
-	println("Statistics");
+	println("Statistics for Type <Type>");
 	println();
 	println("% cloned:	<percantageOfDuplicatedLines(project, duplicates)>");
 	println("# of clones:	<numberOfClones(duplicates)>");
