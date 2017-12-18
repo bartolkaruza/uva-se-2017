@@ -16,10 +16,10 @@ public void printStatistics(loc project, map[value, set[loc]] duplicates, int Ty
 	println("biggest clone:");
 	println(	biggestClone(duplicates));
 	println();
-	println("biggest class:");
+	println("biggest class: \<occurences, location\>");
 	println(biggestCloneClass(duplicates));
 	println();
-	println("example clone:");
+	println("example clone: \<occurences, location\>");
 	println(exampleClone(duplicates));
 	println("***************************************");
 }
