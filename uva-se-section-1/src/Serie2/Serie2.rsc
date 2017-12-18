@@ -22,10 +22,12 @@ public map[value, set[loc]] runSerie2(){
 	
 	println("Building ast");
 	
-	loc project = |project://SystemUnderTest|;
+	//loc project = |project://SystemUnderTest|;
+	loc project = |project://smallsql0.21_src|;
+	//loc project =  |project://hsqldb-2.3.1|;
 	
 	set[Declaration] ast = createAstsFromEclipseProject(project, true);
-	//set[Declaration] ast = createAstsFromEclipseProject(|project://smallsql0.21_src|, true);
+	//set[Declaration] ast = createAstsFromEclipseProject(, true);
 	//set[Declaration] ast = createAstsFromEclipseProject(|project://hsqldb-2.3.1|, true);
 	
 	println("search duplicates type 1");
