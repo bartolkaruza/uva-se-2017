@@ -40,7 +40,7 @@ public int cloneClasses(map[value, set[loc]] duplicates) {
 	return size(duplicates);	
 }
 
-public set[loc] biggestClone(map[value, set[loc]] duplicates) {
+public tuple[int, loc] biggestClone(map[value, set[loc]] duplicates) {
 	int sizeOfLargest = 0;
 	set[loc] largest; 
 	for(d <- duplicates) {
@@ -51,10 +51,10 @@ public set[loc] biggestClone(map[value, set[loc]] duplicates) {
 			sizeOfLargest = lines;
 		}
 	}
-	return largest;
+	return <sizeOfLargest, getOneFrom(largest)>;
 }
 
-public set[loc] biggestCloneClass(map[value, set[loc]] duplicates) {
+public tuple[int, loc] biggestCloneClass(map[value, set[loc]] duplicates) {
 	int sizeOfLargest = 0;
 	set[loc] largest;
 	for(d <- duplicates) {
@@ -64,7 +64,7 @@ public set[loc] biggestCloneClass(map[value, set[loc]] duplicates) {
 			sizeOfLargest = clones;
 		}
 	}
-	return largest;
+	return <sizeOfLargest, getOneFrom(largest)>;
 }
 
 public loc exampleClone(map[value, set[loc]] duplicates) {
