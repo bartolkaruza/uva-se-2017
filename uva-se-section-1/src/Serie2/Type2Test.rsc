@@ -19,11 +19,13 @@ public test bool shouldFind2Classes() {
 }
 
 test bool shouldFindType2Classes() {
-	return countDuplicates(findDuplicatesForClass("Type2Clones")) == 1;
+	clones = countDuplicates(findDuplicatesForClassType2("Type2Clones"));
+	return clones == 1;
 }
 
 test bool shouldFindSingleClassOnMultiline() {
-	return countDuplicates(findDuplicatesForClass("ShouldFindSingleClass")) == 1;
+	clones = findDuplicatesForClassType2("ShouldFindSingleClass");
+	return countDuplicates(clones) == 2;
 }
 
 test bool cleanNodeForType2Method() {
@@ -35,12 +37,10 @@ test bool cleanNodeForType2MethodWithStatement() {
 }
 
 test bool cleanNodeForType2SimpleName() {
-	println(cleanNodeForType2(simpleName("name")));
 	return cleanNodeForType2(simpleName("name")) == simpleName("");
 }
 
 test bool cleanNodeForType2Variable() {
-	println(cleanNodeForType2(variable("name", 3)));
 	return cleanNodeForType2(variable("name", 3)) == variable("", 3);
 }
 

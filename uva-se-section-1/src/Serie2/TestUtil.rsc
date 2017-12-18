@@ -50,6 +50,23 @@ public map[node, set[loc]] findDuplicatesForClass(str className) {
 	return duplicates;
 }
 
+public map[node, set[loc]] findDuplicatesForClassType2(str className) {
+	map[node, set[loc]] duplicates = ();
+	set[Declaration] ast = createAstsFromEclipseProject(|project://SystemUnderTest|, true);
+	visit (ast) {
+		case C:class(className, _, _, decl): {
+			duplicates = findType2Duplicates(toSet(decl), Type2);
+		}
+	}
+	for(d <- duplicates) {
+		if(size(duplicates[d]) > 1) {
+			println(duplicates[d]);
+			println();
+		}
+	}
+	return duplicates;
+}
+
 public list[node] getBlockFromMethod(str methodName) {
 	set[Declaration] ast = createAstsFromEclipseProject(|project://SystemUnderTest|, true);
 	list[node] foundBlock = [];
