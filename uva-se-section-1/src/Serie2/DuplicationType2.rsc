@@ -48,7 +48,7 @@ public map[node, set[loc]] findType2Duplicates(set[Declaration] ast, int Type) {
 
 // Code for appending consecutive sequences of blocks
 public map[node, set[loc]] findConsecutiveSequenceBlocks(map[node, set[loc]] duplicates, set[Declaration] ast){
-	map[list[value], int] blocks = ();
+	map[node, int] blocks = ();
 	
 	// Generate all blocks 
 	// {1,2,3} {1,2} {3} gives {3}, {1,2}, {2}
@@ -61,14 +61,14 @@ public map[node, set[loc]] findConsecutiveSequenceBlocks(map[node, set[loc]] dup
 	
 	println("Filter all duplicate blocks");
 	// The blocks are generated for all children even non duplicate. So this filters out all blocks where all of the children are duplicates
-	blocks = (n : blocks[n] | n <- blocks, blocks[n] > 1, all(c <- (n), c in duplicates));
+	blocks = (n : blocks[n] | n <- blocks, blocks[n] > 1, all(c <- getChildren(n), c in duplicates));
 	
 	println("Perform subsumption");
 	// Remove all blocks that are covered by another block {3}, {1,2}, {2} gives {3}, {1,2}. Ugly subsumption
-	blocks = blocks - (n : blocks[n] | n <- blocks, any(q <- blocks, (n != q && (n) < (q) && blocks[n] == blocks[q])));
+	blocks = blocks - (n : blocks[n] | n <- blocks, any(q <- blocks, (n != q && getChildren(n) < getChildren(q) && blocks[n] == blocks[q])));
 	
 	// Add locs for all blocs
-	blocksWithLoc = (makeNode("blockNode", n) : union({duplicates[c]| c <- (n)}) | n <- blocks);
+	blocksWithLoc = (n : union({duplicates[c]| c <- getChildren(n)}) | n <- blocks);
 	
 	println("Merge duplicates and blocks");
 	// Add duplicates that are not blocks, so we have a full set of duplicates;
@@ -90,18 +90,18 @@ public set[loc] mergeLocs(set[loc] locs1, set[loc] locs2){
 
 }
 
-public map[list[value], int] createBlocks(map[node, set[loc]] duplicates, list[value] children, map[list[value], int] blocks){
+public map[node, int] createBlocks(map[node, set[loc]] duplicates, list[value] children, map[node, int] blocks){
 
 	for(i <- [0..size(children)]){
 		prev = [];
 		
 		for(j <- [i..size(children)]){
 			prev += children[j];
-			//node n = makeNode("blockNode", prev);
-			if(prev in blocks) {
-				blocks[prev] += 1;
+			node n = makeNode("blockNode", prev);
+			if(n in blocks) {
+				blocks[n] += 1;
 			} else{
-				blocks[prev] = 1;
+				blocks[n] = 1;
 			}			
 		}
 	}
