@@ -40,7 +40,7 @@ public map[value, set[loc]] runSerie2(){
 	//makeHasseDiagram(type1, Type1);
 	
 	println("search duplicates type 2");
-	
+	type1 = ();
 	map[value, set[loc]] type2 = findType2Duplicates(ast, Type2);
 	//writeDuplicatesToDisk(type2, Type2);
 	
