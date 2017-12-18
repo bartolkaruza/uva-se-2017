@@ -22,34 +22,31 @@ public map[value, set[loc]] runSerie2(){
 	
 	println("Building ast");
 	
-	set[Declaration] ast = createAstsFromEclipseProject(|project://SystemUnderTest|, true);
+	loc project = |project://SystemUnderTest|;
+	
+	set[Declaration] ast = createAstsFromEclipseProject(project, true);
 	//set[Declaration] ast = createAstsFromEclipseProject(|project://smallsql0.21_src|, true);
 	//set[Declaration] ast = createAstsFromEclipseProject(|project://hsqldb-2.3.1|, true);
 	
-	println("search duplicates");
+	println("search duplicates type 1");
+	
+	map[value, set[loc]] type1 = findType2Duplicates(ast, Type1);
+	writeDuplicatesToDisk(type1, Type1);
+	
+	printStatistics(project, type1, Type1);
+	
+	makeHasseDiagram(type1, Type1);
+	
+	println("search duplicates type 2");
 	
 	map[value, set[loc]] type2 = findType2Duplicates(ast, Type2);
 	writeDuplicatesToDisk(type2, Type2);
 	
-	map[value, set[loc]] type1 = findType2Duplicates(ast, Type1);
-	writeDuplicatesToDisk(type1, Type2);
+	printStatistics(project, type2, Type2);
 	
-	printStatistics(|project://SystemUnderTest|, type1, Type1);
-	printStatistics(|project://SystemUnderTest|, type2, Type2);
-	
-	makeHasseDiagram(type1, Type1);
 	makeHasseDiagram(type2, Type2);
 	
 	println("Found all duplicates");
-    //duplicates = (d : duplicates[d] | d <- duplicates, size(duplicates[d]) > 1, !d in coverdChildNodes);
-    
-    
-    
-	//for(d <- duplicates) {
-	//	if(size(duplicates[d]) > 1) {
-	//		println(duplicates[d]);
-	//		println();
-	//	}
-	//}
+
     return ();
 }
