@@ -1,6 +1,7 @@
 module Serie2::Statistics
 import Set;
 import Map;
+import List;
 import Serie1::Serie1;
 import Serie1::LinesOfCode;
 import IO;
@@ -73,17 +74,10 @@ public loc exampleClone(map[value, set[loc]] duplicates) {
 
 real duplicatedLines(map[value, set[loc]] duplicates) {
 	dupSet = union({duplicates[d] | d <- duplicates});
+	lineMap = ();
 	real lines = 0.0;
 	for(dis <- dupSet) {
-		bool containedInOtherLoc = false;
-		for(oth <- dupSet) {
-			if(dis != oth && dis <= oth) {
-				containedInOtherLoc = true;
-			}
-		}
-		if(!containedInOtherLoc) {
-			lines = dis.end.line - dis.begin.line + lines; 
-		}
+		lineMap += toMap([ <"<dis.uri> + <x>", dis> | int x <- [dis.begin.line .. dis.end.line]]);
 	}
-	return lines;
+	return size(lineMap) + 1.0;
 }
